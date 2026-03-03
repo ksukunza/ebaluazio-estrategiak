@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baliabideen altxorra</title>
+    <title>Ekarpenen Erregistroa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
+            /* COLOR VERDE PERSONALIZADO */
             --primary: #76b895;
             --primary-dark: #5a8c73;
             --bg: #f3f4f6;
             --white: #ffffff;
             --text: #323130;
-            --danger: #d13438;
         }
 
         body {
-            font-family: "Segoe UI", "Segoe UI Web (West European)", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
@@ -31,7 +31,7 @@
             padding: 40px;
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-            position: relative; /* Necesario para posicionar elementos dentro si fuera necesario */
+            position: relative;
         }
 
         h2 {
@@ -42,7 +42,7 @@
             margin-bottom: 30px;
         }
 
-        /* Estilos del Formulario */
+        /* Formulario */
         form {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -69,7 +69,6 @@
             border: 1px solid #d1d1d1;
             border-radius: 6px;
             transition: all 0.2s;
-            background-color: #fff;
         }
 
         form input:focus, form select:focus {
@@ -95,14 +94,12 @@
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            transition: transform 0.1s, opacity 0.2s;
+            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
         }
-
-        button:active { transform: scale(0.98); }
 
         .btn-primary {
             background-color: var(--primary);
@@ -117,35 +114,20 @@
             border: 1px solid #ccc;
             flex: 1;
         }
-        .btn-secondary:hover { background-color: #f3f3f3; color: #333; }
-
-        .btn-danger {
-            background-color: transparent;
-            color: #999;
-            padding: 8px;
-            font-size: 1.1rem;
-        }
-        .btn-danger:hover {
-            color: var(--danger);
-            background-color: #fff0f0;
-        }
+        .btn-secondary:hover { background-color: #f3f3f3; }
 
         /* Tabla */
-        .table-responsive {
-            overflow-x: auto;
-        }
+        .table-responsive { overflow-x: auto; }
 
         table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            margin-top: 10px;
         }
 
         thead th {
             background-color: #f8f9fa;
             color: #444;
-            font-weight: 700;
             padding: 16px;
             text-align: left;
             border-bottom: 2px solid var(--primary);
@@ -154,13 +136,9 @@
         tbody td {
             padding: 16px;
             border-bottom: 1px solid #e1dfdd;
-            vertical-align: top;
         }
 
-        tbody tr:last-child td { border-bottom: none; }
-        tbody tr:hover { background-color: #f6faf8; }
-
-        /* Chips para los temas */
+        /* Estilo Chips Temas */
         .tema-chip {
             display: inline-block;
             padding: 4px 10px;
@@ -172,83 +150,50 @@
         .tema-B { background-color: #f0f4ff; color: #4b6ea3; }
         .tema-C { background-color: #fff4ce; color: #7a5e0b; }
 
-        /* Loading */
-        #loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-            font-style: italic;
-        }
-
-        /* Logo en el pie de página (derecha) */
+        /* Logo pie */
         .footer-logo {
             margin-top: 40px;
             padding-top: 20px;
             border-top: 1px solid #eee;
-            text-align: right; /* Alineación a la derecha */
+            text-align: right;
         }
 
         .footer-logo img {
-            max-height: 60px; /* Tamaño del logo controlado */
+            max-height: 60px;
             width: auto;
-            opacity: 0.9;
         }
 
-        /* Responsive */
+        #loading { text-align: center; padding: 20px; color: #666; }
+
+        /* Móvil */
         @media (max-width: 700px) {
-            .contenedor { padding: 20px; margin: 10px; }
-            form { grid-template-columns: 1fr; gap: 15px; padding: 15px; }
+            form { grid-template-columns: 1fr; }
             .botones { flex-direction: column; }
-            
-            thead { display: none; } /* Ocultar cabecera en móvil */
-            tbody tr {
-                display: block;
-                background: #fff;
-                border: 1px solid #eee;
-                border-radius: 8px;
-                margin-bottom: 15px;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-                position: relative;
-            }
-            tbody td {
-                display: block;
-                text-align: right;
-                padding: 10px 15px;
-                border-bottom: 1px solid #f0f0f0;
-            }
-            tbody td:last-child { border-bottom: none; text-align: center; padding-top: 5px; }
-            
-            tbody td::before {
-                content: attr(data-label);
-                float: left;
-                font-weight: 700;
-                color: #666;
-                text-transform: uppercase;
-                font-size: 0.75rem;
-                margin-top: 2px;
-            }
-            .btn-danger { width: 100%; border-top: 1px solid #eee; border-radius: 0 0 8px 8px; }
+            thead { display: none; }
+            tbody tr { display: block; border: 1px solid #eee; margin-bottom: 10px; border-radius: 8px; padding: 10px; }
+            tbody td { display: block; text-align: right; border: none; }
+            tbody td::before { content: attr(data-label); float: left; font-weight: bold; color: #888; }
         }
     </style>
 </head>
 <body>
 
 <div class="contenedor">
-    <h2><i class="fa-solid fa-users-rectangle"></i> Baliabideen altxorra</h2>
+    <h2><i class="fa-solid fa-users-rectangle"></i> Ekarpenen Erregistroa</h2>
 
     <form id="dataForm">
         <label>
             Ikastetxearen izena
-            <input type="text" id="centro" placeholder="Adib: Hernani BHI..." required>
+            <input type="text" id="centro" placeholder="Adib: Lizeo Axular..." required>
         </label>
 
         <label>
             Landu beharreko gaia
             <select id="tema" required>
                 <option value="">Aukeratu gai bat...</option>
-                <option value="Inklusioa: ikasleen artean">Inklusioa: ikasleen artean</option>
-                <option value="Inklusioa: ikasle-irakasle artean">Inklusioa: ikasle-irakasle artean</option>
-                <option value="Hizkuntza aldamiajea">Hizkuntzarako laguntza inklusiboa</option>
+                <option value="A">Inklusioa: ikasleen artean</option>
+                <option value="B">Inklusioa: ikasle-irakasle artean</option>
+                <option value="C">Hizkuntza aldamiajea</option>
             </select>
         </label>
 
@@ -268,45 +213,40 @@
     </form>
 
     <div class="table-responsive">
-        <table id="tablaCompleta">
+        <table>
             <thead>
                 <tr>
-                    <th width="25%">Ikastetxearen izena</th>
-                    <th width="25%">Gaia</th>
+                    <th width="30%">Ikastetxea</th>
+                    <th width="30%">Gaia</th>
                     <th width="40%">Ekarpena</th>
-                    <th width="10%" style="text-align: center;">Ekintzak</th>
                 </tr>
             </thead>
             <tbody id="tablaDatos"></tbody>
         </table>
-        
-        <div id="loading">
-            <i class="fa-solid fa-circle-notch fa-spin"></i> Datuak kargatzen...
-        </div>
+        <div id="loading"><i class="fa-solid fa-spinner fa-spin"></i> Kargatzen...</div>
     </div>
 
     <div class="footer-logo">
-        <img src="Eskola.png" alt="Logotipoa">
+        <img src="logo.png" alt="Logotipoa">
     </div>
-
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp } 
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } 
     from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     // --------------------------------------------------------------
-    // ⚠️ ATENCIÓN: PEGA AQUÍ EL CÓDIGO QUE COPIASTE DE FIREBASE ⚠️
+    // ⚠️ PEGA AQUÍ TU CONFIGURACIÓN DE FIREBASE ⚠️
     // --------------------------------------------------------------
     const firebaseConfig = {
-    apiKey: "AIzaSyAV_g9Bd29B3kzuZqsHnE6WU4QzttmbhAk",
-    authDomain: "ekarpenakapp.firebaseapp.com",
-    projectId: "ekarpenakapp",
-    storageBucket: "ekarpenakapp.firebasestorage.app",
-    messagingSenderId: "958519034694",
-    appId: "1:958519034694:web:e07751035d587322379b47"
-  };
+         apiKey: "AIzaSyAV_g9Bd29B3kzuZqsHnE6WU4QzttmbhAk",
+    authDomain: "ekarpenakapp.firebaseapp.com",
+    projectId: "ekarpenakapp",
+    storageBucket: "ekarpenakapp.firebasestorage.app",
+    messagingSenderId: "958519034694",
+    appId: "1:958519034694:web:e07751035d587322379b47"
+    };
     // --------------------------------------------------------------
 
     const app = initializeApp(firebaseConfig);
@@ -314,51 +254,39 @@
     const tabla = document.getElementById("tablaDatos");
     const loading = document.getElementById("loading");
 
-    // 1. ESCRIBIR DATOS
-    document.getElementById("dataForm").addEventListener("submit", async function (event) {
-        event.preventDefault();
+    // Enviar datos
+    document.getElementById("dataForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
         const btn = document.getElementById("btnEnviar");
         const centro = document.getElementById("centro").value;
         const tema = document.getElementById("tema").value;
         const aportacion = document.getElementById("aportacion").value;
-        
+
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Bidaltzen...';
+        btn.innerHTML = "Bidaltzen...";
 
         try {
             await addDoc(collection(db, "ekarpenak"), {
-                centro: centro,
-                tema: tema,
-                aportacion: aportacion,
-                fecha: serverTimestamp()
+                centro, tema, aportacion, fecha: serverTimestamp()
             });
             this.reset();
-        } catch (e) {
-            alert("Errorea: " + e.message);
+        } catch (error) {
+            alert("Errorea: " + error.message);
         } finally {
             btn.disabled = false;
             btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Gehitu';
         }
     });
 
-    // 2. LEER DATOS EN TIEMPO REAL
+    // Leer datos
     const q = query(collection(db, "ekarpenak"), orderBy("fecha", "desc"));
-    
     onSnapshot(q, (snapshot) => {
         loading.style.display = "none";
         tabla.innerHTML = "";
-        
-        if (snapshot.empty) {
-            tabla.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:30px; color:#999;">Oraindik ez dago ekarpenik. Izan lehenengoa!</td></tr>';
-            return;
-        }
-
-        snapshot.forEach((documento) => {
-            const data = documento.data();
-            const id = documento.id; 
+        snapshot.forEach((doc) => {
+            const data = doc.data();
             const fila = document.createElement("tr");
             
-            // Estilos de color según el tema
             let temaClass = "tema-chip";
             if(data.tema.startsWith("A")) temaClass += " tema-A";
             else if(data.tema.startsWith("B")) temaClass += " tema-B";
@@ -366,61 +294,29 @@
 
             fila.innerHTML = `
                 <td data-label="Ikastetxea"><strong>${data.centro}</strong></td>
-                <td data-label="Gaia"><span class="${temaClass}">${data.tema.substring(0, 30)}${data.tema.length>30?'...':''}</span></td>
+                <td data-label="Gaia"><span class="${temaClass}">${data.tema}</span></td>
                 <td data-label="Ekarpena">${data.aportacion}</td>
-                <td data-label="Ekintzak" style="text-align:center;">
-                    <button class="btn-danger btn-borrar" title="Ezabatu">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </button>
-                </td>
             `;
-
-            const btnBorrar = fila.querySelector(".btn-borrar");
-            btnBorrar.addEventListener("click", () => borrarEkarpena(id));
-
             tabla.appendChild(fila);
         });
     });
 
-    // 3. FUNCIÓN DE BORRADO
-    async function borrarEkarpena(id) {
-        if(confirm("Ziur zaude ekarpen hau ezabatu nahi duzula?")) {
-            try {
-                await deleteDoc(doc(db, "ekarpenak", id));
-            } catch (e) {
-                alert("Errorea ezabatzerakoan: " + e.message);
-            }
-        }
-    }
-
-    // 4. EXPORTAR A CSV
+    // Exportar CSV
     document.getElementById("exportarCSV").addEventListener("click", function () {
         const filas = document.querySelectorAll("#tablaDatos tr");
-        if(filas.length === 0 || filas[0].innerText.includes("Oraindik ez dago")) { 
-            alert("Ez dago daturik esportatzeko."); return; 
-        }
-
-        let csv = ["\uFEFFIkastetxearen izena,Gaia,Ekarpena"];
-
-        filas.forEach(fila => {
-            const celdas = Array.from(fila.querySelectorAll("td")).slice(0, 3);
-            if(celdas.length > 0) {
-                let datosFila = celdas.map(td => `"${td.innerText.replace(/"/g, '""')}"`);
-                csv.push(datosFila.join(","));
-            }
+        if(filas.length === 0) return alert("Ez dago daturik.");
+        let csv = ["\uFEFFIkastetxea,Gaia,Ekarpena"];
+        filas.forEach(f => {
+            const c = Array.from(f.querySelectorAll("td")).map(td => `"${td.innerText.replace(/"/g, '""')}"`);
+            csv.push(c.join(","));
         });
-
-        const contenidoCSV = csv.join("\n");
-        const blob = new Blob([contenidoCSV], { type: "text/csv;charset=utf-8;" });
-        const enlace = document.createElement("a");
-        enlace.href = URL.createObjectURL(blob);
-        enlace.download = "ekarpenak.csv";
-        document.body.appendChild(enlace);
-        enlace.click();
-        document.body.removeChild(enlace);
+        const blob = new Blob([csv.join("\n")], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "ekarpenak.csv";
+        link.click();
     });
 </script>
-
 </body>
-
 </html>
+
