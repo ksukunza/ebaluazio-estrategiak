@@ -288,9 +288,9 @@
             const fila = document.createElement("tr");
             
             let temaClass = "tema-chip";
-            if(data.tema.startsWith("A")) temaClass += " tema-A";
-            else if(data.tema.startsWith("B")) temaClass += " tema-B";
-            else if(data.tema.startsWith("C")) temaClass += " tema-C";
+            if(data.tema.startsWith("Inklusioa: ikasleen artean")) temaClass += " tema-A";
+            else if(data.tema.startsWith("Inklusioa: ikasle-irakasle artean")) temaClass += " tema-B";
+            else if(data.tema.startsWith("Hizkuntza aldamiajea")) temaClass += " tema-C";
 
             fila.innerHTML = `
                 <td data-label="Ikastetxea"><strong>${data.centro}</strong></td>
@@ -319,6 +319,7 @@
 </script>
 </body>
 </html>
+
 
 
 
