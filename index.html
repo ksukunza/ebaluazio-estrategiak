@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ekarpenen Erregistroa</title>
+    <title>Baliabideen altxorra</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            /* COLOR VERDE PERSONALIZADO */
             --primary: #76b895;
             --primary-dark: #5a8c73;
             --bg: #f3f4f6;
@@ -25,13 +24,12 @@
         }
 
         .contenedor {
-            max-width: 950px;
+            max-width: 1000px;
             margin: 0 auto;
             background: var(--white);
             padding: 40px;
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-            position: relative;
         }
 
         h2 {
@@ -42,11 +40,10 @@
             margin-bottom: 30px;
         }
 
-        /* Formulario */
         form {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 25px;
+            gap: 20px;
             margin-bottom: 40px;
             background-color: #fcfcfc;
             padding: 25px;
@@ -62,16 +59,16 @@
             color: #605e5c;
         }
 
-        form input, form select {
+        form input, form select, form textarea {
             margin-top: 8px;
             padding: 12px;
             font-size: 15px;
             border: 1px solid #d1d1d1;
             border-radius: 6px;
-            transition: all 0.2s;
+            background-color: #fff;
         }
 
-        form input:focus, form select:focus {
+        form input:focus, form select:focus, form textarea:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(118, 184, 149, 0.2);
@@ -79,99 +76,64 @@
 
         .fila-completa { grid-column: 1 / -1; }
 
-        /* Botones */
         .botones {
             grid-column: 1 / -1;
             display: flex;
             gap: 15px;
-            margin-top: 10px;
         }
 
         button {
             padding: 12px 24px;
-            font-size: 15px;
             font-weight: 600;
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            transition: all 0.2s;
         }
 
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-            flex: 2;
-        }
+        .btn-primary { background-color: var(--primary); color: white; flex: 2; }
         .btn-primary:hover { background-color: var(--primary-dark); }
+        .btn-secondary { background-color: #fff; color: #666; border: 1px solid #ccc; flex: 1; }
 
-        .btn-secondary {
-            background-color: #fff;
-            color: #666;
-            border: 1px solid #ccc;
-            flex: 1;
-        }
-        .btn-secondary:hover { background-color: #f3f3f3; }
-
-        /* Tabla */
         .table-responsive { overflow-x: auto; }
-
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-
+        table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 10px; font-size: 0.9rem; }
         thead th {
             background-color: #f8f9fa;
-            color: #444;
-            padding: 16px;
+            padding: 15px;
             text-align: left;
             border-bottom: 2px solid var(--primary);
         }
+        tbody td { padding: 15px; border-bottom: 1px solid #e1dfdd; vertical-align: top; }
+        tbody tr:hover { background-color: #f6faf8; }
 
-        tbody td {
-            padding: 16px;
-            border-bottom: 1px solid #e1dfdd;
+        .opcion-tag {
+            background-color: #eef7f2;
+            color: #4e8a6b;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 0.8rem;
         }
 
-        /* Estilo Chips Temas */
-        .tema-chip {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-        .tema-A { background-color: #eef7f2; color: #4e8a6b; }
-        .tema-B { background-color: #f0f4ff; color: #4b6ea3; }
-        .tema-C { background-color: #fff4ce; color: #7a5e0b; }
-
-        /* Logo pie */
         .footer-logo {
             margin-top: 40px;
             padding-top: 20px;
             border-top: 1px solid #eee;
             text-align: right;
         }
-
-        .footer-logo img {
-            max-height: 60px;
-            width: auto;
-        }
+        .footer-logo img { max-height: 60px; opacity: 0.9; }
 
         #loading { text-align: center; padding: 20px; color: #666; }
 
-        /* Móvil */
-        @media (max-width: 700px) {
+        @media (max-width: 750px) {
             form { grid-template-columns: 1fr; }
-            .botones { flex-direction: column; }
             thead { display: none; }
-            tbody tr { display: block; border: 1px solid #eee; margin-bottom: 10px; border-radius: 8px; padding: 10px; }
-            tbody td { display: block; text-align: right; border: none; }
+            tbody tr { display: block; border: 1px solid #eee; margin-bottom: 15px; border-radius: 8px; }
+            tbody td { display: block; text-align: right; padding: 10px; border: none; border-bottom: 1px solid #f0f0f0; }
             tbody td::before { content: attr(data-label); float: left; font-weight: bold; color: #888; }
         }
     </style>
@@ -179,27 +141,34 @@
 <body>
 
 <div class="contenedor">
-    <h2><i class="fa-solid fa-users-rectangle"></i> Ekarpenen Erregistroa</h2>
+    <h2><i class="fa-solid fa-users-rectangle"></i> Baliabideen altxorra</h2>
 
     <form id="dataForm">
-        <label>
-            Ikastetxearen izena
-            <input type="text" id="centro" placeholder="Adib: Hernani BHI..." required>
-        </label>
+        <label>Ikastetxea <input type="text" id="ikastetxea" placeholder="Ikastetxearen izena..." required></label>
+        <label>Kodea <input type="text" id="kodea" placeholder="Ikastetxearen kodea..." required></label>
+        <label>Izen-abizenak <input type="text" id="izenAbizenak" placeholder="Zure izena..." required></label>
+        <label>Emaila <input type="email" id="email" placeholder="adibidea@eskola.eus" required></label>
 
-        <label>
-            Landu beharreko gaia
-            <select id="tema" required>
-                <option value="">Aukeratu gai bat...</option>
-                <option value="Inklusioa: ikasleen artean">Inklusioa: ikasleen artean</option>
-                <option value="Inklusioa: ikasle-irakasle artean">Inklusioa: ikasle-irakasle artean</option>
-                <option value="Hizkuntza aldamiajea">Hizkuntza aldamiajea</option>
+        <label class="fila-completa">
+            Aukeratu aukera bat:
+            <select id="aukera" required>
+                <option value="">Aukeratu bat...</option>
+                <option value="Ikas-helburuak partekatzeko">Ikas-helburuak partekatzeko</option>
+                <option value="Aurrezagutzak azaleratzeko">Aurrezagutzak azaleratzeko</option>
+                <option value="Kalitatezko feedback emateko">Kalitatezko feedback emateko</option>
+                <option value="Ko-ebaluazioa egiteko">Ko-ebaluazioa egiteko</option>
+                <option value="Autoebaluazioa (erregulazioa) egiteko">Autoebaluazioa (erregulazioa) egiteko</option>
             </select>
         </label>
 
         <label class="fila-completa">
-            Ekarpena esaldi batean
-            <input type="text" id="aportacion" placeholder="Idatzi hemen zure ekarpena..." required>
+            Estrategiaren deskribapena
+            <textarea id="deskribapena" rows="3" placeholder="Idatzi hemen deskribapena..." required></textarea>
+        </label>
+
+        <label class="fila-completa">
+            Estrategiaren adibidea, esteka,...
+            <input type="text" id="adibidea" placeholder="Adibidea edo esteka..." required>
         </label>
 
         <div class="botones">
@@ -213,17 +182,18 @@
     </form>
 
     <div class="table-responsive">
-        <table>
+        <table id="tablaCompleta">
             <thead>
                 <tr>
-                    <th width="30%">Ikastetxea</th>
-                    <th width="30%">Gaia</th>
-                    <th width="40%">Ekarpena</th>
+                    <th width="20%">Ikastetxea / Kodea / Egilea</th>
+                    <th width="20%">Aukeratutakoa</th>
+                    <th width="30%">Deskribapena</th>
+                    <th width="30%">Adibidea/Esteka</th>
                 </tr>
             </thead>
             <tbody id="tablaDatos"></tbody>
         </table>
-        <div id="loading"><i class="fa-solid fa-spinner fa-spin"></i> Kargatzen...</div>
+        <div id="loading"><i class="fa-solid fa-circle-notch fa-spin"></i> Datuak kargatzen...</div>
     </div>
 
     <div class="footer-logo">
@@ -236,90 +206,91 @@
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } 
     from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // --------------------------------------------------------------
-    // ⚠️ PEGA AQUÍ TU CONFIGURACIÓN DE FIREBASE ⚠️
-    // --------------------------------------------------------------
     const firebaseConfig = {
-         apiKey: "AIzaSyAV_g9Bd29B3kzuZqsHnE6WU4QzttmbhAk",
-    authDomain: "ekarpenakapp.firebaseapp.com",
-    projectId: "ekarpenakapp",
-    storageBucket: "ekarpenakapp.firebasestorage.app",
-    messagingSenderId: "958519034694",
-    appId: "1:958519034694:web:e07751035d587322379b47"
+        apiKey: "AIzaSyAV_g9Bd29B3kzuZqsHnE6WU4QzttmbhAk",
+        authDomain: "ekarpenakapp.firebaseapp.com",
+        projectId: "ekarpenakapp",
+        storageBucket: "ekarpenakapp.firebasestorage.app",
+        messagingSenderId: "958519034694",
+        appId: "1:958519034694:web:e07751035d587322379b47"
     };
-    // --------------------------------------------------------------
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const tabla = document.getElementById("tablaDatos");
     const loading = document.getElementById("loading");
 
-    // Enviar datos
-    document.getElementById("dataForm").addEventListener("submit", async function (e) {
-        e.preventDefault();
+    document.getElementById("dataForm").addEventListener("submit", async function (event) {
+        event.preventDefault();
         const btn = document.getElementById("btnEnviar");
-        const centro = document.getElementById("centro").value;
-        const tema = document.getElementById("tema").value;
-        const aportacion = document.getElementById("aportacion").value;
+        
+        const datos = {
+            ikastetxea: document.getElementById("ikastetxea").value,
+            kodea: document.getElementById("kodea").value,
+            izenAbizenak: document.getElementById("izenAbizenak").value,
+            email: document.getElementById("email").value,
+            aukera: document.getElementById("aukera").value,
+            deskribapena: document.getElementById("deskribapena").value,
+            adibidea: document.getElementById("adibidea").value,
+            fecha: serverTimestamp()
+        };
 
         btn.disabled = true;
         btn.innerHTML = "Bidaltzen...";
 
         try {
-            await addDoc(collection(db, "ekarpenak"), {
-                centro, tema, aportacion, fecha: serverTimestamp()
-            });
+            await addDoc(collection(db, "ekarpenak"), datos);
             this.reset();
-        } catch (error) {
-            alert("Errorea: " + error.message);
+        } catch (e) {
+            alert("Errorea: " + e.message);
         } finally {
             btn.disabled = false;
             btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Gehitu';
         }
     });
 
-    // Leer datos
     const q = query(collection(db, "ekarpenak"), orderBy("fecha", "desc"));
     onSnapshot(q, (snapshot) => {
         loading.style.display = "none";
         tabla.innerHTML = "";
-        snapshot.forEach((doc) => {
-            const data = doc.data();
+        
+        if (snapshot.empty) {
+            tabla.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">Ez dago daturik oraindik.</td></tr>';
+            return;
+        }
+
+        snapshot.forEach((documento) => {
+            const d = documento.data();
             const fila = document.createElement("tr");
-            
-            let temaClass = "tema-chip";
-            if(data.tema.startsWith("Inklusioa: ikasleen artean")) temaClass += " tema-A";
-            else if(data.tema.startsWith("Inklusioa: ikasle-irakasle artean")) temaClass += " tema-B";
-            else if(data.tema.startsWith("Hizkuntza aldamiajea")) temaClass += " tema-C";
 
             fila.innerHTML = `
-                <td data-label="Ikastetxea"><strong>${data.centro}</strong></td>
-                <td data-label="Gaia"><span class="${temaClass}">${data.tema}</span></td>
-                <td data-label="Ekarpena">${data.aportacion}</td>
+                <td data-label="Egilea">
+                    <strong>${d.ikastetxea}</strong><br>
+                    <small>K: ${d.kodea}</small><br>
+                    <small>${d.izenAbizenak}</small>
+                </td>
+                <td data-label="Aukera"><span class="opcion-tag">${d.aukera}</span></td>
+                <td data-label="Deskribapena">${d.deskribapena}</td>
+                <td data-label="Adibidea">${d.adibidea.includes('http') ? `<a href="${d.adibidea}" target="_blank">Ikusi esteka</a>` : d.adibidea}</td>
             `;
             tabla.appendChild(fila);
         });
     });
 
-    // Exportar CSV
     document.getElementById("exportarCSV").addEventListener("click", function () {
-        const filas = document.querySelectorAll("#tablaDatos tr");
-        if(filas.length === 0) return alert("Ez dago daturik.");
-        let csv = ["\uFEFFIkastetxea,Gaia,Ekarpena"];
-        filas.forEach(f => {
-            const c = Array.from(f.querySelectorAll("td")).map(td => `"${td.innerText.replace(/"/g, '""')}"`);
-            csv.push(c.join(","));
-        });
-        const blob = new Blob([csv.join("\n")], { type: "text/csv;charset=utf-8;" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "ekarpenak.csv";
-        link.click();
+        let csv = ["\uFEFFIkastetxea,Kodea,Egilea,Email,Aukera,Deskribapena,Adibidea"];
+        onSnapshot(q, (snapshot) => {
+            snapshot.forEach(doc => {
+                const d = doc.data();
+                csv.push(`"${d.ikastetxea}","${d.kodea}","${d.izenAbizenak}","${d.email}","${d.aukera}","${d.deskribapena.replace(/"/g, '""')}","${d.adibidea}"`);
+            });
+            const blob = new Blob([csv.join("\n")], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "baliabideak.csv";
+            link.click();
+        }, { onlyOnce: true });
     });
 </script>
 </body>
 </html>
-
-
-
-
