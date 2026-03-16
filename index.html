@@ -76,6 +76,22 @@
 
         .fila-completa { grid-column: 1 / -1; }
 
+        /* Estilo para la pregunta resaltada */
+        .pregunta-resaltada {
+            background-color: #f0f9f4; /* Verde suave de fondo */
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary); /* Barra lateral verde */
+            margin-bottom: 25px;
+            color: var(--primary) !important;
+            font-size: 1.1rem !important;
+        }
+
+        .pregunta-resaltada select {
+            margin-top: 15px !important;
+            width: 100%;
+        }
+
         .botones {
             grid-column: 1 / -1;
             display: flex;
@@ -149,8 +165,8 @@
         <label>Izen-abizenak <input type="text" id="izenAbizenak" placeholder="Zure izena..." required></label>
         <label>Emaila <input type="email" id="email" placeholder="adibidea@eskola.eus" required></label>
 
-        <label class="fila-completa">
-            Zer estrategia “funtzional”  eta zehatz erabiltzen dugu ebaluazio formatzailerako? (praktika onak):
+        <label class="fila-completa pregunta-resaltada">
+            Zer estrategia “funtzional” eta zehatz erabiltzen dugu ebaluazio formatzailerako? (praktika onak):
             <select id="aukera" required>
                 <option value="">Aukeratu bat...</option>
                 <option value="Ikas-helburuak partekatzeko">Ikas-helburuak partekatzeko</option>
@@ -206,6 +222,7 @@
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } 
     from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+    // Configuración de Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyAV_g9Bd29B3kzuZqsHnE6WU4QzttmbhAk",
         authDomain: "ekarpenakapp.firebaseapp.com",
@@ -220,6 +237,7 @@
     const tabla = document.getElementById("tablaDatos");
     const loading = document.getElementById("loading");
 
+    // Guardar datos
     document.getElementById("dataForm").addEventListener("submit", async function (event) {
         event.preventDefault();
         const btn = document.getElementById("btnEnviar");
@@ -249,6 +267,7 @@
         }
     });
 
+    // Leer datos en tiempo real
     const q = query(collection(db, "ekarpenak"), orderBy("fecha", "desc"));
     onSnapshot(q, (snapshot) => {
         loading.style.display = "none";
@@ -277,6 +296,7 @@
         });
     });
 
+    // Exportar a CSV
     document.getElementById("exportarCSV").addEventListener("click", function () {
         let csv = ["\uFEFFIkastetxea,Kodea,Egilea,Email,Aukera,Deskribapena,Adibidea"];
         onSnapshot(q, (snapshot) => {
