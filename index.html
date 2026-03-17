@@ -74,22 +74,14 @@
         .btn-primary { background-color: var(--primary); color: white; flex: 2; }
         .btn-secondary { background-color: #fff; color: #666; border: 1px solid #ccc; flex: 1; }
 
-        /* SECCIÓN OCULTA POR DEFECTO */
         .admin-only { display: none; margin-top: 30px; } 
-        
         .table-responsive { overflow-x: auto; margin-top: 15px; }
         table { width: 100%; border-collapse: separate; border-spacing: 0; }
         thead th { background-color: #f8f9fa; padding: 15px; text-align: left; border-bottom: 2px solid var(--primary); }
         tbody td { padding: 15px; border-bottom: 1px solid #e1dfdd; vertical-align: top; }
-
         .opcion-tag { background-color: #eef7f2; color: #4e8a6b; padding: 3px 8px; border-radius: 10px; font-weight: bold; font-size: 0.8rem; }
         
-        .admin-trigger {
-            margin-top: 60px;
-            text-align: center;
-            opacity: 0.15;
-            transition: opacity 0.3s;
-        }
+        .admin-trigger { margin-top: 60px; text-align: center; opacity: 0.15; transition: opacity 0.3s; }
         .admin-trigger:hover { opacity: 0.8; }
     </style>
 </head>
@@ -201,14 +193,13 @@
         contenedor.appendChild(div);
     });
 
-    // --- LOGICA DE SELECCIÓN Y AUTOCOMPLETADO ---
     const selectCentro = document.getElementById("selectCentro");
     const selectProfesor = document.getElementById("selectProfesor");
     const inputKodea = document.getElementById("kodea");
     const inputEmail = document.getElementById("email");
 
-    const listaCentros = [...new Set(Object.values(profesoresDB).map(p => p.centro))].sort();
-    listaCentros.forEach(c => {
+    const centrosUnicos = [...new Set(Object.values(profesoresDB).map(p => p.centro))].sort();
+    centrosUnicos.forEach(c => {
         let opt = document.createElement("option"); opt.value = c; opt.textContent = c;
         selectCentro.appendChild(opt);
     });
@@ -216,25 +207,25 @@
     selectCentro.addEventListener("change", () => {
         const centroSel = selectCentro.value;
         selectProfesor.innerHTML = '<option value="">Aukeratu...</option>';
-        inputEmail.value = ""; inputKodea.value = "";
+        inputEmail.value = ""; 
+        inputKodea.value = "";
         
         if (centroSel) {
             selectProfesor.disabled = false;
-            // Obtener el código del primer registro que coincida con el centro
-            const primerRegistro = Object.values(profesoresDB).find(p => p.centro === centroSel);
-            inputKodea.value = primerRegistro ? primerRegistro.codigo : "";
+            const profesDeEsteCentro = Object.keys(profesoresDB).filter(nombre => profesoresDB[nombre].centro === centroSel);
             
-            // Cargar profesores de ese centro
-            const profes = Object.keys(profesoresDB).filter(n => profesoresDB[n].centro === centroSel);
-            profes.forEach(n => {
-                let o = document.createElement("option"); o.value = n; o.textContent = n;
+            profesDeEsteCentro.forEach(nombre => {
+                let o = document.createElement("option"); o.value = nombre; o.textContent = nombre;
                 selectProfesor.appendChild(o);
             });
 
-            // Si solo hay uno, seleccionarlo y poner email
-            if (profes.length === 1) {
-                selectProfesor.value = profes[0];
-                inputEmail.value = profesoresDB[profes[0]].email;
+            // Código del centro
+            inputKodea.value = profesoresDB[profesDeEsteCentro[0]].codigo;
+
+            // Si solo hay un profesor en ese centro, lo seleccionamos y ponemos su email
+            if (profesDeEsteCentro.length === 1) {
+                selectProfesor.value = profesDeEsteCentro[0];
+                inputEmail.value = profesoresDB[profesDeEsteCentro[0]].email;
             }
         } else {
             selectProfesor.disabled = true;
@@ -242,11 +233,14 @@
     });
 
     selectProfesor.addEventListener("change", () => {
-        const p = profesoresDB[selectProfesor.value];
-        inputEmail.value = p ? p.email : "";
+        const profeSeleccionado = selectProfesor.value;
+        if (profeSeleccionado && profesoresDB[profeSeleccionado]) {
+            inputEmail.value = profesoresDB[profeSeleccionado].email;
+        } else {
+            inputEmail.value = "";
+        }
     });
 
-    // --- FIREBASE SETUP ---
     const firebaseConfig = {
         apiKey: "AIzaSyAV_g9Bd29B3kzuZqsHnE6WU4QzttmbhAk",
         authDomain: "ekarpenakapp.firebaseapp.com",
@@ -258,7 +252,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // --- ENVÍO DE DATOS ---
     document.getElementById("dataForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         const btn = document.getElementById("btnEnviar");
@@ -288,7 +281,6 @@
         finally { btn.disabled = false; }
     });
 
-    // --- CARGA DE TABLA ---
     const q = query(collection(db, "ekarpenak"), orderBy("fecha", "desc"));
     onSnapshot(q, (snapshot) => {
         const tabla = document.getElementById("tablaDatos");
@@ -305,7 +297,6 @@
         });
     });
 
-    // --- DESBLOQUEO ADMIN ---
     window.desbloquearTodo = function() {
         const pass = prompt("Pasahitza:");
         if (pass === "1234") { 
@@ -315,7 +306,6 @@
         }
     };
 
-    // --- LÓGICA CSV ---
     document.getElementById("exportarCSV").addEventListener("click", () => {
         const filas = document.querySelectorAll("#tablaCompleta tr");
         let csv = "Egilea;Estrategia;Deskribapena;Adibidea\n";
