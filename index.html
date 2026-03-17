@@ -32,13 +32,7 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
         }
 
-        h2 {
-            margin-top: 0;
-            text-align: center;
-            color: var(--primary);
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-        }
+        h2 { text-align: center; color: var(--primary); font-size: 1.5rem; margin-bottom: 20px; }
 
         form {
             display: grid;
@@ -56,74 +50,56 @@
             form { grid-template-columns: 1fr 1fr; padding: 25px; gap: 20px; }
         }
 
-        form label {
-            display: flex;
-            flex-direction: column;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: #605e5c;
-        }
+        form label { display: flex; flex-direction: column; font-weight: 600; font-size: 0.9rem; color: #605e5c; }
+        form input, form select, form textarea { margin-top: 8px; padding: 12px; font-size: 16px; border: 1px solid #d1d1d1; border-radius: 6px; width: 100%; box-sizing: border-box; }
+        
+        .campo-autocompletado { background-color: #f0f0f0; color: #777; cursor: not-allowed; }
 
-        form input, form select, form textarea {
-            margin-top: 8px;
-            padding: 12px;
-            font-size: 16px;
-            border: 1px solid #d1d1d1;
-            border-radius: 6px;
-            background-color: #fff;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .campo-autocompletado {
-            background-color: #f0f0f0;
-            color: #777;
-            cursor: not-allowed;
-        }
-
-        .seccion-estrategia {
+        /* SECCIONES DE ESTRATEGIA */
+        .bloque-estrategia {
             grid-column: 1 / -1;
             background-color: #f0f9f4;
-            padding: 25px;
+            padding: 20px;
             border-radius: 10px;
             border-left: 6px solid var(--primary);
+            margin-top: 10px;
+        }
+
+        .titulo-estrategia {
+            color: var(--primary-dark);
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .campos-estrategia {
             display: grid;
-            gap: 20px;
-            margin: 10px 0;
+            grid-template-columns: 1fr;
+            gap: 15px;
         }
 
-        .seccion-estrategia label:first-child {
-            color: var(--primary-dark) !important;
-            font-size: 1.25rem !important;
-            font-weight: 800 !important;
-            border-bottom: 1px solid rgba(118, 184, 149, 0.3);
-            padding-bottom: 10px;
+        @media (min-width: 768px) {
+            .campos-estrategia { grid-template-columns: 1fr 1fr; }
+            .full-width { grid-column: 1 / -1; }
         }
 
-        .botones { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 10px; }
+        .botones { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
         @media (min-width: 480px) { .botones { flex-direction: row; } }
 
         button { padding: 14px 24px; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-primary { background-color: var(--primary); color: white; flex: 2; }
         .btn-secondary { background-color: #fff; color: #666; border: 1px solid #ccc; flex: 1; }
 
-        .table-responsive { overflow-x: auto; }
-        @media (max-width: 768px) {
-            table, thead, tbody, th, td, tr { display: block; }
-            thead tr { position: absolute; top: -9999px; left: -9999px; }
-            tr { border: 1px solid #e1dfdd; margin-bottom: 15px; border-radius: 8px; padding: 10px; }
-            td { border: none; position: relative; padding-left: 45% !important; text-align: right !important; padding-top: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
-            td::before { content: attr(data-label); position: absolute; left: 10px; width: 40%; text-align: left; font-weight: bold; color: var(--primary-dark); }
-        }
-        @media (min-width: 769px) {
-            table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 10px; }
-            thead th { background-color: #f8f9fa; padding: 15px; text-align: left; border-bottom: 2px solid var(--primary); }
-            tbody td { padding: 15px; border-bottom: 1px solid #e1dfdd; vertical-align: top; }
-        }
+        /* TABLA */
+        .table-responsive { overflow-x: auto; margin-top: 30px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        thead th { background-color: #f8f9fa; padding: 15px; text-align: left; border-bottom: 2px solid var(--primary); }
+        tbody td { padding: 15px; border-bottom: 1px solid #e1dfdd; vertical-align: top; }
 
         .opcion-tag { background-color: #eef7f2; color: #4e8a6b; padding: 3px 8px; border-radius: 10px; font-weight: bold; font-size: 0.8rem; }
-        .footer-logo { margin-top: 30px; text-align: center; }
-        .footer-logo img { max-height: 50px; opacity: 0.9; }
         #loading { text-align: center; padding: 20px; color: #666; }
     </style>
 </head>
@@ -133,41 +109,16 @@
     <h2><i class="fa-solid fa-users-rectangle"></i> Ebaluaziorako estrategiak</h2>
 
     <form id="dataForm">
-        <label>
-            Ikastetxea
-            <select id="selectCentro" required>
-                <option value="">Aukeratu ikastetxea...</option>
-            </select>
-        </label>
-
-        <label>
-            Izen-abizenak
-            <select id="selectProfesor" required disabled>
-                <option value="">Lehenengo ikastetxea aukeratu...</option>
-            </select>
-        </label>
-
+        <label>Ikastetxea <select id="selectCentro" required><option value="">Aukeratu...</option></select></label>
+        <label>Izen-abizenak <select id="selectProfesor" required disabled><option value="">Aukeratu...</option></select></label>
         <label>Kodea <input type="text" id="kodea" class="campo-autocompletado" readonly></label>
         <label>Emaila <input type="email" id="email" class="campo-autocompletado" readonly></label>
 
-        <div class="seccion-estrategia">
-            <label>
-                Zer estrategia “funtzional” eta zehatz erabiltzen dugu ebaluazio formatzailerako? (praktika onak):
-                <select id="aukera" required>
-                    <option value="">Aukeratu bat...</option>
-                    <option value="Ikas-helburuak partekatzeko">Ikas-helburuak partekatzeko</option>
-                    <option value="Aurrezagutzak azaleratzeko">Aurrezagutzak azaleratzeko</option>
-                    <option value="Kalitatezko feedback emateko">Kalitatezko feedback emateko</option>
-                    <option value="Ko-ebaluazioa egiteko">Ko-ebaluazioa egiteko</option>
-                    <option value="Autoebaluazioa (erregulazioa) egiteko">Autoebaluazioa (erregulazioa) egiteko</option>
-                </select>
-            </label>
-            <label>Estrategiaren deskribapena <textarea id="deskribapena" rows="3" required></textarea></label>
-            <label>Estrategiaren adibidea, esteka,... <input type="text" id="adibidea" required></label>
-        </div>
+        <div id="estrategiasContenedor" style="grid-column: 1 / -1;">
+            </div>
 
         <div class="botones">
-            <button type="submit" class="btn-primary" id="btnEnviar"><i class="fa-solid fa-paper-plane"></i> Gehitu</button>
+            <button type="submit" class="btn-primary" id="btnEnviar"><i class="fa-solid fa-paper-plane"></i> Bidali denak</button>
             <button type="button" class="btn-secondary" id="exportarCSV"><i class="fa-solid fa-file-csv"></i> CSV</button>
         </div>
     </form>
@@ -177,7 +128,7 @@
             <thead>
                 <tr>
                     <th>Egilea</th>
-                    <th>Aukera</th>
+                    <th>Estrategia</th>
                     <th>Deskribapena</th>
                     <th>Adibidea</th>
                 </tr>
@@ -186,113 +137,83 @@
         </table>
         <div id="loading"><i class="fa-solid fa-circle-notch fa-spin"></i> Datuak kargatzen...</div>
     </div>
-
-    <div class="footer-logo">
-        <img src="Eskola.png" alt="Logotipoa">
-    </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // --- 1. DATOS DEL EXCEL (CUIDADO CON LAS COMAS AL FINAL) ---
+    // --- 1. TUS DATOS DEL EXCEL ---
     const profesoresDB = {
-"Ane Bedayo Pascual": { centro: "CPI Aldaialde IPI", codigo: "010617", email: "a.bedayo@irakasle.eus" },
-"Ana Carmona Poza": { centro: "OLAMENDI BHI", codigo: "012117", email: "a.carmona@irakasle.eus" },
-"Ane Miren Etxegarai Irigoien": { centro: "KAREMENGO AMA IPI", codigo: "012150", email: "etxegaraiirigoien@irakasle.eus" },
-"Josune Iñarra Laskurain": { centro: "Altza BHI ", codigo: "012224", email: "laskurain@irakasle.eus" },
-"Xabier Garmendia Garcia": { centro: "JM Iparragirre BHI", codigo: "012286", email: "x.garmendia@irakasle.eus" },
-"Iraia San Miguel Lizarralde": { centro: "Soraluze BHI", codigo: "012946", email: "i.sanmiguellizarralde@irakasle.eus" },
-"Matilde Navas Los Arcos": { centro: "Lauaizeta Ikastola BHI", codigo: "012958", email: "matti@irakasle.eus" },
-"Eneritz Garmendia Ollokiegi": { centro: "LEZO BHI", codigo: "012962", email: "eneritzgarmendia@irakasle.eus" },
-"Izaskun Ormaetxea Jauregi": { centro: "Orixe BHI", codigo: "012980", email: "ormaetxea@irakasle.eus" },
-"Cynthia Cubero Larrabeiti": { centro: "Azkoitia BHI", codigo: "012985", email: "c.cubero@irakasle.eus" },
-"Amaya Muniategi-Andicoechea Zubizarreta": { centro: "Arrasate BHI", codigo: "013006", email: "amaiamuni@irakasle.eus" },
-"Olatz Goikoetxeaundia Usandizaga": { centro: "IES Oñati BHI", codigo: "013015", email: "o.goikoetxeaundia@irakasle.eus" },
-"Marta Garcia Gutierrez": { centro: "IES ELGOIBAR BHI", codigo: "013431", email: "m.garciagutierrez@irakasle.eus" },
-"Naiara Lasa Sainz": { centro: "Beasain BHI", codigo: "013461", email: "n.lasa@irakasle.eus" },
-"Gorka Arruzazabala Gomez": { centro: "Antonio Trueba BHI Barakaldo", codigo: "014064", email: "g.gomez@irakasle.eus" },
-"Oihana Urquiza Merino": { centro: "Pagasarribide IPI", codigo: "014140", email: "o.urquiza@irakasle.eus" },
-"Ana Perez Fernandez": { centro: "IES Martín de Bertendona BHI", codigo: "014187", email: "a.perez.f@irakasle.eus" },
-"Eritz Vizcaya Ozaeta": { centro: "J.B. EGUZKITZA MEABE IPI", codigo: "014341", email: "e.vizcaya@irakasle.eus" },
-"Jaime Perez Martin": { centro: "IES JA Zunzunegui BHI", codigo: "014398", email: "j.perezmartin@irakasle.eus" },
-"Virginia Tome Cabero": { centro: "Balmaseda BHI", codigo: "014451", email: "v.tome@irakasle.eus" },
-"Miren Ivon Amorrortu Amarica": { centro: "IES Arratia BHI", codigo: "014456", email: "ibone@irakasle.eus" },
-"IES LUIS BRIÑAS-SANTUTXU BHI ZUZENDARITZA 015075": { centro: "Luis Briñas-Santutxu BHI", codigo: "015075", email: "015075aa@hezkuntza.net" },
-"Eskarne Zabala Lodos": { centro: "Zorrotza bhi", codigo: "015078", email: "eskarnezabala@irakasle.eus" },
-"Miren Gotzone Larrea Gorostiaga": { centro: "IES ETXEBARRI BHI", codigo: "015087", email: "mg.larrea@irakasle.eus" },
-"Gorane Fernandez Beitia": { centro: "Bengoetxe BHI", codigo: "015088", email: "g.fernandezbeitia@irakasle.eus" },
-"Andrea Balentziaga Ibarlucea": { centro: "Juan Orobiogoitia BHI", codigo: "015090", email: "a.balentziaga@irakasle.eus" },
-"Itziar Aparicio Peña": { centro: "IES MUSKIZ BHI", codigo: "015092", email: "i.apariciopena@irakasle.eus" },
-"Itsasne Ordeñana Bengoa": { centro: "SAN INAZIO BHI", codigo: "015191", email: "i.ordenana@irakasle.eus" },
-"Maria Carmen Diez Gutierrez": { centro: "AXULAR BHI", codigo: "015626", email: "maria.carmendiez@irakasle.eus" },
-"Maria Josefa Colmenero Herrera": { centro: "CPI Antonio Trueba IPI", codigo: "015683", email: "colmeneroherrera@irakasle.eus" },
-"Maria Asuncion Requero Zabala": { centro: "Ignacio Ellacuria-Zurbaran BHI", codigo: "015724", email: "requerozabala@irakasle.eus" },
-"Monike Gojenola Elizondo": { centro: "Ermua BHI", codigo: "015779", email: "m.gojenola@irakasle.eus" },
-        // ... PEGA AQUÍ TU LISTA
+        "Ane Garcia": { centro: "Amara Berri", codigo: "012345", email: "ane@mail.com" },
+        "Jon Altuna": { centro: "Amara Berri", codigo: "012345", email: "jon@mail.com" },
+        "Miren Urquijo": { centro: "Zubiri Manteo", codigo: "015678", email: "miren@mail.com" },
     };
 
+    // --- 2. CONFIGURACIÓN DE LAS ESTRATEGIAS ---
+    const categorias = [
+        "Ikas-helburuak partekatzeko",
+        "Aurrezagutzak azaleratzeko",
+        "Kalitatezko feedback emateko",
+        "Ko-ebaluazioa egiteko",
+        "Autoebaluazioa (erregulazioa) egiteko"
+    ];
+
+    const contenedor = document.getElementById("estrategiasContenedor");
+
+    // Generar los campos automáticamente para cada categoría
+    categorias.forEach((cat, index) => {
+        const div = document.createElement("div");
+        div.className = "bloque-estrategia";
+        div.innerHTML = `
+            <div class="titulo-estrategia"><i class="fa-solid fa-chevron-right"></i> ${cat}</div>
+            <div class="campos-estrategia">
+                <label class="full-width">Deskribapena
+                    <textarea class="desc-input" data-cat="${cat}" rows="2" placeholder="Estrategia honen deskribapena idatzi..."></textarea>
+                </label>
+                <label class="full-width">Adibidea edo esteka
+                    <input type="text" class="link-input" data-cat="${cat}" placeholder="Adibidea, esteka, dokumentua...">
+                </label>
+            </div>
+        `;
+        contenedor.appendChild(div);
+    });
+
+    // --- 3. LÓGICA DE SELECCIÓN (La misma que antes) ---
     const selectCentro = document.getElementById("selectCentro");
     const selectProfesor = document.getElementById("selectProfesor");
     const inputKodea = document.getElementById("kodea");
     const inputEmail = document.getElementById("email");
 
-    // --- 2. CARGAR CENTROS ÚNICOS ---
     const listaCentros = [...new Set(Object.values(profesoresDB).map(p => p.centro))].sort();
-    listaCentros.forEach(centro => {
-        if(centro) {
-            let opt = document.createElement("option");
-            opt.value = centro;
-            opt.textContent = centro;
-            selectCentro.appendChild(opt);
-        }
+    listaCentros.forEach(c => {
+        let opt = document.createElement("option"); opt.value = c; opt.textContent = c;
+        selectCentro.appendChild(opt);
     });
 
-    // --- 3. LÓGICA AL ELEGIR CENTRO (CON AUTO-SELECCIÓN) ---
     selectCentro.addEventListener("change", () => {
         const centroSel = selectCentro.value;
-        selectProfesor.innerHTML = '<option value="">Aukeratu irakaslea...</option>';
-        inputEmail.value = "";
-        inputKodea.value = "";
-        
+        selectProfesor.innerHTML = '<option value="">Aukeratu...</option>';
+        inputEmail.value = ""; inputKodea.value = "";
         if (centroSel) {
             selectProfesor.disabled = false;
-            
-            // Poner código del centro
-            const infoCentro = Object.values(profesoresDB).find(p => p.centro === centroSel);
-            inputKodea.value = infoCentro ? infoCentro.codigo : "";
-
-            // Filtrar profesores
-            const profesFiltrados = Object.keys(profesoresDB).filter(nombre => 
-                profesoresDB[nombre].centro === centroSel
-            );
-
-            profesFiltrados.forEach(nombre => {
-                let opt = document.createElement("option");
-                opt.value = nombre;
-                opt.textContent = nombre;
-                selectProfesor.appendChild(opt);
-            });
-
-            // SI SOLO HAY UN PROFESOR, SELECCIONARLO AUTOMÁTICAMENTE
-            if (profesFiltrados.length === 1) {
-                const nombreUnico = profesFiltrados[0];
-                selectProfesor.value = nombreUnico;
-                inputEmail.value = profesoresDB[nombreUnico].email;
+            const infoC = Object.values(profesoresDB).find(p => p.centro === centroSel);
+            inputKodea.value = infoC ? infoC.codigo : "";
+            const profes = Object.keys(profesoresDB).filter(n => profesoresDB[n].centro === centroSel);
+            profes.forEach(n => { let o = document.createElement("option"); o.value = n; o.textContent = n; selectProfesor.appendChild(o); });
+            if (profes.length === 1) { 
+                selectProfesor.value = profes[0]; 
+                inputEmail.value = profesoresDB[profes[0]].email; 
             }
-        } else {
-            selectProfesor.disabled = true;
-        }
+        } else { selectProfesor.disabled = true; }
     });
 
-    // Lógica manual por si hay varios profesores
     selectProfesor.addEventListener("change", () => {
         const p = profesoresDB[selectProfesor.value];
         inputEmail.value = p ? p.email : "";
     });
 
-    // --- 4. CONFIGURACIÓN FIREBASE ---
+    // --- 4. FIREBASE CONFIG ---
     const firebaseConfig = {
         apiKey: "AIzaSyAV_g9Bd29B3kzuZqsHnE6WU4QzttmbhAk",
         authDomain: "ekarpenakapp.firebaseapp.com",
@@ -305,30 +226,44 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // GUARDAR
+    // --- 5. GUARDAR TODAS LAS ESTRATEGIAS RELLENADAS ---
     document.getElementById("dataForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         const btn = document.getElementById("btnEnviar");
-        const datos = {
-            ikastetxea: selectCentro.value,
-            kodea: inputKodea.value,
-            izenAbizenak: selectProfesor.value,
-            email: inputEmail.value,
-            aukera: document.getElementById("aukera").value,
-            deskribapena: document.getElementById("deskribapena").value,
-            adibidea: document.getElementById("adibidea").value,
-            fecha: serverTimestamp()
-        };
+        const descs = document.querySelectorAll(".desc-input");
+        const links = document.querySelectorAll(".link-input");
+        
         btn.disabled = true;
+        btn.textContent = "Bidaltzen...";
+
         try {
-            await addDoc(collection(db, "ekarpenak"), datos);
+            // Recorremos los 5 bloques
+            for (let i = 0; i < descs.length; i++) {
+                const descVal = descs[i].value.trim();
+                const linkVal = links[i].value.trim();
+
+                // Solo guardamos si han escrito algo en la descripción
+                if (descVal !== "") {
+                    await addDoc(collection(db, "ekarpenak"), {
+                        ikastetxea: selectCentro.value,
+                        kodea: inputKodea.value,
+                        izenAbizenak: selectProfesor.value,
+                        email: inputEmail.value,
+                        aukera: descs[i].dataset.cat, // El título de la categoría
+                        deskribapena: descVal,
+                        adibidea: linkVal,
+                        fecha: serverTimestamp()
+                    });
+                }
+            }
+            alert("Datuak ondo gorde dira!");
             e.target.reset();
             selectProfesor.disabled = true;
         } catch (err) { alert("Errorea: " + err.message); }
-        finally { btn.disabled = false; }
+        finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Bidali denak'; }
     });
 
-    // LEER Y MOSTRAR
+    // --- 6. LEER Y MOSTRAR ---
     const q = query(collection(db, "ekarpenak"), orderBy("fecha", "desc"));
     onSnapshot(q, (snapshot) => {
         document.getElementById("loading").style.display = "none";
@@ -338,29 +273,13 @@
             const d = doc.data();
             const fila = document.createElement("tr");
             fila.innerHTML = `
-                <td data-label="Egilea"><strong>${d.ikastetxea}</strong><br><small>${d.izenAbizenak}</small></td>
-                <td data-label="Aukera"><span class="opcion-tag">${d.aukera}</span></td>
-                <td data-label="Deskribapena">${d.deskribapena}</td>
-                <td data-label="Adibidea">${d.adibidea.includes('http') ? `<a href="${d.adibidea}" target="_blank">Ikusi</a>` : d.adibidea}</td>
+                <td><strong>${d.ikastetxea}</strong><br><small>${d.izenAbizenak}</small></td>
+                <td><span class="opcion-tag">${d.aukera}</span></td>
+                <td>${d.deskribapena}</td>
+                <td>${d.adibidea.includes('http') ? `<a href="${d.adibidea}" target="_blank">Lotura</a>` : d.adibidea}</td>
             `;
             tabla.appendChild(fila);
         });
-    });
-
-    // EXPORTAR CSV
-    document.getElementById("exportarCSV").addEventListener("click", function () {
-        let csv = ["\uFEFFIkastetxea,Kodea,Egilea,Email,Aukera,Deskribapena,Adibidea"];
-        onSnapshot(q, (snapshot) => {
-            snapshot.forEach(doc => {
-                const d = doc.data();
-                csv.push(`"${d.ikastetxea}","${d.kodea}","${d.izenAbizenak}","${d.email}","${d.aukera}","${d.deskribapena.replace(/"/g, '""')}","${d.adibidea}"`);
-            });
-            const blob = new Blob([csv.join("\n")], { type: "text/csv;charset=utf-8;" });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = "ebaluazio_estrategiak.csv";
-            link.click();
-        }, { onlyOnce: true });
     });
 </script>
 </body>
