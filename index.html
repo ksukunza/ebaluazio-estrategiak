@@ -55,6 +55,7 @@
         
         .campo-autocompletado { background-color: #f0f0f0; color: #777; cursor: not-allowed; }
 
+        /* BLOQUES DE ESTRATEGIA */
         .bloque-estrategia {
             grid-column: 1 / -1;
             background-color: #f0f9f4;
@@ -68,10 +69,19 @@
             color: var(--primary-dark);
             font-size: 1.1rem;
             font-weight: 800;
-            margin-bottom: 15px;
+            margin-bottom: 5px;
             display: flex;
             align-items: center;
             gap: 10px;
+        }
+
+        .subtitulo-estrategia {
+            font-size: 0.85rem;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 15px;
+            padding-left: 24px;
+            line-height: 1.3;
         }
 
         .campos-estrategia {
@@ -175,28 +185,45 @@
         "Monike Gojenola Elizondo": { centro: "Ermua BHI", codigo: "015779", email: "m.gojenola@irakasle.eus" }
     };
 
-    // --- NUEVAS CATEGORÍAS ACTUALIZADAS ---
+    // --- CONFIGURACIÓN DE LAS ESTRATEGIAS CON SUS PREGUNTAS ---
     const categorias = [
-        "Ikas-helburuak partekatzeko estrategiak",
-        "Ebaluazioaren diseinua egiteko estrategia",
-        "Kalitatezko feedback emateko",
-        "Ko-ebaluazioa egiteko",
-        "Autoebaluazioa (erregulazioa) egiteko"
+        {
+            titulo: "Ikas-helburuak partekatzeko estrategiak",
+            subtitulo: "Zein jarduera edo estrategia erabiltzen ditugu ikasleek argi ulertzeko zein diren lortu nahi diren ikas‑helburuak? Zein jarduera edo estrategia erabiltzen ditugu ikasleei gidatzeko nola erakutsi dezaketen ikasitakoa?"
+        },
+        {
+            titulo: "Ebaluazioaren diseinua egiteko estrategia",
+            subtitulo: "Zein jarduera edo estrategia erabiltzen ditugu ikasleek nola ikasten ari diren erakusten duten ebidentzia esanguratsuak lortzeko?"
+        },
+        {
+            titulo: "Kalitatezko feedback emateko",
+            subtitulo: "Zein estrategia edo jarduera erabiltzen ditugu ikasleen ikaskuntza‑prozesua gidatuko duen feedbacka eskaintzeko?"
+        },
+        {
+            titulo: "Ko-ebaluazioa egiteko",
+            subtitulo: "Zein estrategia edo jarduera erabiltzen ditugu ikasleek elkarri feedbacka emanez batak bestearengandik ikas dezaten?"
+        },
+        {
+            titulo: "Autoebaluazioa (erregulazioa) egiteko",
+            subtitulo: "Zein estrategia edo jarduera proposatzen ditugu ikasleek euren ikaskuntzaren gaineko hausnarketa modu autonomoan egiten ikas dezaten (auto-feedbacka)?"
+        }
     ];
 
     const contenedor = document.getElementById("estrategiasContenedor");
 
+    // Generamos los bloques usando la nueva estructura
     categorias.forEach((cat) => {
         const div = document.createElement("div");
         div.className = "bloque-estrategia";
         div.innerHTML = `
-            <div class="titulo-estrategia"><i class="fa-solid fa-chevron-right"></i> ${cat}</div>
+            <div class="titulo-estrategia"><i class="fa-solid fa-chevron-right"></i> ${cat.titulo}</div>
+            <div class="subtitulo-estrategia">${cat.subtitulo}</div>
             <div class="campos-estrategia">
                 <label class="full-width">Deskribapena
-                    <textarea class="desc-input" data-cat="${cat}" rows="2" placeholder="Estrategia honen deskribapena idatzi..."></textarea>
+                    <textarea class="desc-input" data-cat="${cat.titulo}" rows="2" placeholder="Estrategia honen deskribapena idatzi..."></textarea>
                 </label>
                 <label class="full-width">Adibidea edo esteka
-                    <input type="text" class="link-input" data-cat="${cat}" placeholder="Adibidea, esteka, dokumentua...">
+                    <input type="text" class="link-input" data-cat="${cat.titulo}" placeholder="Adibidea, esteka, dokumentua...">
                 </label>
             </div>
         `;
