@@ -54,7 +54,6 @@
         @media (min-width: 768px) {
             .contenedor { padding: 40px; }
             form { grid-template-columns: 1fr 1fr; padding: 25px; gap: 20px; }
-            .fila-completa { grid-column: 1 / -1; }
         }
 
         form label {
@@ -197,7 +196,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // --- 1. TUS DATOS DEL EXCEL (EN CASTELLANO) ---
+    // --- 1. DATOS DEL EXCEL (CUIDADO CON LAS COMAS AL FINAL) ---
     const profesoresDB = {
        "Ane Bedayo Pascual": { centro: "CPI Aldaialde IPI", codigo: "010617", email: "a.bedayo@irakasle.eus" },
 "Ana Carmona Poza": { centro: "OLAMENDI BHI", codigo: "012117", email: "a.carmona@irakasle.eus" },
@@ -231,8 +230,7 @@
 "Maria Josefa Colmenero Herrera": { centro: "CPI Antonio Trueba IPI", codigo: "015683", email: "colmeneroherrera@irakasle.eus" },
 "Maria Asuncion Requero Zabala": { centro: "Ignacio Ellacuria-Zurbaran BHI", codigo: "015724", email: "requerozabala@irakasle.eus" },
 "Monike Gojenola Elizondo": { centro: "Ermua BHI", codigo: "015779", email: "m.gojenola@irakasle.eus" },
-
-        // ... PEGA AQUÍ EL RESTO DE TUS FILAS (ASEGÚRATE DE QUE TERMINEN EN COMA , )
+        // ... PEGA AQUÍ TU LISTA
     };
 
     const selectCentro = document.getElementById("selectCentro");
@@ -240,60 +238,61 @@
     const inputKodea = document.getElementById("kodea");
     const inputEmail = document.getElementById("email");
 
-    // --- 2. CARGAR EL DESPLEGABLE DE CENTROS ---
-    // Extraemos los nombres de los centros, quitamos duplicados y ordenamos
+    // --- 2. CARGAR CENTROS ÚNICOS ---
     const listaCentros = [...new Set(Object.values(profesoresDB).map(p => p.centro))].sort();
+    listaCentros.forEach(centro => {
+        if(centro) {
+            let opt = document.createElement("option");
+            opt.value = centro;
+            opt.textContent = centro;
+            selectCentro.appendChild(opt);
+        }
+    });
 
-    if (listaCentros.length > 0) {
-        listaCentros.forEach(nombreCentro => {
-            if (nombreCentro) {
-                let opt = document.createElement("option");
-                opt.value = nombreCentro;
-                opt.textContent = nombreCentro;
-                selectCentro.appendChild(opt);
-            }
-        });
-    } else {
-        console.error("Ez da ikastetxerik aurkitu datuetan. Begiratu 'centro' hitza ondo idatzita dagoen.");
-    }
-
-    // --- 3. LÓGICA AL ELEGIR CENTRO ---
+    // --- 3. LÓGICA AL ELEGIR CENTRO (CON AUTO-SELECCIÓN) ---
     selectCentro.addEventListener("change", () => {
-        const centroSeleccionado = selectCentro.value;
-        
-        // Limpiar campos
+        const centroSel = selectCentro.value;
         selectProfesor.innerHTML = '<option value="">Aukeratu irakaslea...</option>';
         inputEmail.value = "";
         inputKodea.value = "";
         
-        if (centroSeleccionado) {
+        if (centroSel) {
             selectProfesor.disabled = false;
             
-            // Rellenar código (buscamos el primer profesor de ese centro para sacar el código)
-            const datosCentro = Object.values(profesoresDB).find(p => p.centro === centroSeleccionado);
-            inputKodea.value = datosCentro ? datosCentro.codigo : "";
+            // Poner código del centro
+            const infoCentro = Object.values(profesoresDB).find(p => p.centro === centroSel);
+            inputKodea.value = infoCentro ? infoCentro.codigo : "";
 
-            // Filtrar profesores por centro
-            Object.keys(profesoresDB).forEach(nombreProf => {
-                if (profesoresDB[nombreProf].centro === centroSeleccionado) {
-                    let opt = document.createElement("option");
-                    opt.value = nombreProf;
-                    opt.textContent = nombreProf;
-                    selectProfesor.appendChild(opt);
-                }
+            // Filtrar profesores
+            const profesFiltrados = Object.keys(profesoresDB).filter(nombre => 
+                profesoresDB[nombre].centro === centroSel
+            );
+
+            profesFiltrados.forEach(nombre => {
+                let opt = document.createElement("option");
+                opt.value = nombre;
+                opt.textContent = nombre;
+                selectProfesor.appendChild(opt);
             });
+
+            // SI SOLO HAY UN PROFESOR, SELECCIONARLO AUTOMÁTICAMENTE
+            if (profesFiltrados.length === 1) {
+                const nombreUnico = profesFiltrados[0];
+                selectProfesor.value = nombreUnico;
+                inputEmail.value = profesoresDB[nombreUnico].email;
+            }
         } else {
             selectProfesor.disabled = true;
         }
     });
 
-    // --- 4. LÓGICA AL ELEGIR PROFESOR ---
+    // Lógica manual por si hay varios profesores
     selectProfesor.addEventListener("change", () => {
         const p = profesoresDB[selectProfesor.value];
         inputEmail.value = p ? p.email : "";
     });
 
-    // --- 5. CONFIGURACIÓN FIREBASE (ASEGÚRATE DE QUE SEA LA TUYA) ---
+    // --- 4. CONFIGURACIÓN FIREBASE ---
     const firebaseConfig = {
         apiKey: "AIzaSyAV_g9Bd29B3kzuZqsHnE6WU4QzttmbhAk",
         authDomain: "ekarpenakapp.firebaseapp.com",
@@ -306,7 +305,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Guardar datos
+    // GUARDAR
     document.getElementById("dataForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         const btn = document.getElementById("btnEnviar");
@@ -320,7 +319,6 @@
             adibidea: document.getElementById("adibidea").value,
             fecha: serverTimestamp()
         };
-
         btn.disabled = true;
         try {
             await addDoc(collection(db, "ekarpenak"), datos);
@@ -330,7 +328,7 @@
         finally { btn.disabled = false; }
     });
 
-    // Leer datos en tiempo real
+    // LEER Y MOSTRAR
     const q = query(collection(db, "ekarpenak"), orderBy("fecha", "desc"));
     onSnapshot(q, (snapshot) => {
         document.getElementById("loading").style.display = "none";
@@ -347,6 +345,22 @@
             `;
             tabla.appendChild(fila);
         });
+    });
+
+    // EXPORTAR CSV
+    document.getElementById("exportarCSV").addEventListener("click", function () {
+        let csv = ["\uFEFFIkastetxea,Kodea,Egilea,Email,Aukera,Deskribapena,Adibidea"];
+        onSnapshot(q, (snapshot) => {
+            snapshot.forEach(doc => {
+                const d = doc.data();
+                csv.push(`"${d.ikastetxea}","${d.kodea}","${d.izenAbizenak}","${d.email}","${d.aukera}","${d.deskribapena.replace(/"/g, '""')}","${d.adibidea}"`);
+            });
+            const blob = new Blob([csv.join("\n")], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "ebaluazio_estrategiak.csv";
+            link.click();
+        }, { onlyOnce: true });
     });
 </script>
 </body>
