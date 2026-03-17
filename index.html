@@ -12,6 +12,7 @@
             --bg: #f3f4f6;
             --white: #ffffff;
             --text: #323130;
+            --danger: #e74c3c;
         }
 
         body {
@@ -55,7 +56,6 @@
         
         .campo-autocompletado { background-color: #f0f0f0; color: #777; cursor: not-allowed; }
 
-        /* BLOQUES DE ESTRATEGIA */
         .bloque-estrategia {
             grid-column: 1 / -1;
             background-color: #f0f9f4;
@@ -65,35 +65,8 @@
             margin-top: 10px;
         }
 
-        .titulo-estrategia {
-            color: var(--primary-dark);
-            font-size: 1.1rem;
-            font-weight: 800;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .subtitulo-estrategia {
-            font-size: 0.85rem;
-            color: #666;
-            font-style: italic;
-            margin-bottom: 15px;
-            padding-left: 24px;
-            line-height: 1.3;
-        }
-
-        .campos-estrategia {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-
-        @media (min-width: 768px) {
-            .campos-estrategia { grid-template-columns: 1fr 1fr; }
-            .full-width { grid-column: 1 / -1; }
-        }
+        .titulo-estrategia { color: var(--primary-dark); font-size: 1.1rem; font-weight: 800; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
+        .subtitulo-estrategia { font-size: 0.85rem; color: #666; font-style: italic; margin-bottom: 15px; padding-left: 24px; line-height: 1.3; }
 
         .botones { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
         @media (min-width: 480px) { .botones { flex-direction: row; } }
@@ -102,13 +75,31 @@
         .btn-primary { background-color: var(--primary); color: white; flex: 2; }
         .btn-secondary { background-color: #fff; color: #666; border: 1px solid #ccc; flex: 1; }
 
-        .table-responsive { overflow-x: auto; margin-top: 30px; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        /* TABLA Y FILTRO DE PRIVACIDAD */
+        .table-responsive { overflow-x: auto; margin-top: 30px; position: relative; }
+        
+        #overlayPrivacidad {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            text-align: center;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0; display: none; } /* Oculta por defecto */
         thead th { background-color: #f8f9fa; padding: 15px; text-align: left; border-bottom: 2px solid var(--primary); }
         tbody td { padding: 15px; border-bottom: 1px solid #e1dfdd; vertical-align: top; }
 
         .opcion-tag { background-color: #eef7f2; color: #4e8a6b; padding: 3px 8px; border-radius: 10px; font-weight: bold; font-size: 0.8rem; }
-        #loading { text-align: center; padding: 20px; color: #666; }
+        
+        /* Botón Admin Oculto */
+        .admin-trigger {
+            margin-top: 40px;
+            text-align: center;
+            opacity: 0.3;
+        }
+        .admin-trigger:hover { opacity: 1; }
     </style>
 </head>
 <body>
@@ -131,6 +122,11 @@
     </form>
 
     <div class="table-responsive">
+        <div id="overlayPrivacidad">
+            <i class="fa-solid fa-eye-slash fa-3x" style="color: #ccc; margin-bottom: 15px;"></i>
+            <p>Erantzunak ezkutatuta daude une honetan.<br>Dinamizatzaileak sarbidea ematen duenean ikusiko dira.</p>
+        </div>
+
         <table id="tablaCompleta">
             <thead>
                 <tr>
@@ -142,7 +138,12 @@
             </thead>
             <tbody id="tablaDatos"></tbody>
         </table>
-        <div id="loading"><i class="fa-solid fa-circle-notch fa-spin"></i> Datuak kargatzen...</div>
+    </div>
+
+    <div class="admin-trigger">
+        <button onclick="desbloquearRespuestas()" style="background: none; color: #ccc; border: 1px solid #eee; padding: 5px 10px; font-size: 10px;">
+            <i class="fa-solid fa-lock"></i> Admin sarbidea
+        </button>
     </div>
 </div>
 
@@ -150,6 +151,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+    // --- DATOS PROFESORES (Pegados de tu lista anterior) ---
     const profesoresDB = {
         "Ane Bedayo Pascual": { centro: "CPI Aldaialde IPI", codigo: "010617", email: "a.bedayo@irakasle.eus" },
         "Ana Carmona Poza": { centro: "OLAMENDI BHI", codigo: "012117", email: "a.carmona@irakasle.eus" },
@@ -185,84 +187,30 @@
         "Monike Gojenola Elizondo": { centro: "Ermua BHI", codigo: "015779", email: "m.gojenola@irakasle.eus" }
     };
 
-    // --- CONFIGURACIÓN DE LAS ESTRATEGIAS CON SUS PREGUNTAS ---
     const categorias = [
-        {
-            titulo: "Ikas-helburuak partekatzeko estrategiak",
-            subtitulo: "Zein jarduera edo estrategia erabiltzen ditugu ikasleek argi ulertzeko zein diren lortu nahi diren ikas‑helburuak? Zein jarduera edo estrategia erabiltzen ditugu ikasleei gidatzeko nola erakutsi dezaketen ikasitakoa?"
-        },
-        {
-            titulo: "Ebaluazioaren diseinua egiteko estrategia",
-            subtitulo: "Zein jarduera edo estrategia erabiltzen ditugu ikasleek nola ikasten ari diren erakusten duten ebidentzia esanguratsuak lortzeko?"
-        },
-        {
-            titulo: "Kalitatezko feedback emateko",
-            subtitulo: "Zein estrategia edo jarduera erabiltzen ditugu ikasleen ikaskuntza‑prozesua gidatuko duen feedbacka eskaintzeko?"
-        },
-        {
-            titulo: "Ko-ebaluazioa egiteko",
-            subtitulo: "Zein estrategia edo jarduera erabiltzen ditugu ikasleek elkarri feedbacka emanez batak bestearengandik ikas dezaten?"
-        },
-        {
-            titulo: "Autoebaluazioa (erregulazioa) egiteko",
-            subtitulo: "Zein estrategia edo jarduera proposatzen ditugu ikasleek euren ikaskuntzaren gaineko hausnarketa modu autonomoan egiten ikas dezaten (auto-feedbacka)?"
-        }
+        { titulo: "Ikas-helburuak partekatzeko estrategiak", subtitulo: "Zein jarduera edo estrategia erabiltzen ditugu ikasleek argi ulertzeko zein diren lortu nahi diren ikas‑helburuak?" },
+        { titulo: "Ebaluazioaren diseinua egiteko estrategia", subtitulo: "Zein jarduera edo estrategia erabiltzen ditugu ebidentzia esanguratsuak lortzeko?" },
+        { titulo: "Kalitatezko feedback emateko", subtitulo: "Zein estrategia edo jarduera erabiltzen ditugu feedbacka eskaintzeko?" },
+        { titulo: "Ko-ebaluazioa egiteko", subtitulo: "Zein estrategia erabiltzen ditugu ikasleek elkarri feedbacka emateko?" },
+        { titulo: "Autoebaluazioa (erregulazioa) egiteko", subtitulo: "Zein estrategia hausnarketa autonomoa egiteko (auto-feedbacka)?" }
     ];
 
+    // --- CARGA DE FORMULARIO ---
     const contenedor = document.getElementById("estrategiasContenedor");
-
-    // Generamos los bloques usando la nueva estructura
-    categorias.forEach((cat) => {
+    categorias.forEach(cat => {
         const div = document.createElement("div");
         div.className = "bloque-estrategia";
         div.innerHTML = `
             <div class="titulo-estrategia"><i class="fa-solid fa-chevron-right"></i> ${cat.titulo}</div>
             <div class="subtitulo-estrategia">${cat.subtitulo}</div>
             <div class="campos-estrategia">
-                <label class="full-width">Deskribapena
-                    <textarea class="desc-input" data-cat="${cat.titulo}" rows="2" placeholder="Estrategia honen deskribapena idatzi..."></textarea>
-                </label>
-                <label class="full-width">Adibidea edo esteka
-                    <input type="text" class="link-input" data-cat="${cat.titulo}" placeholder="Adibidea, esteka, dokumentua...">
-                </label>
-            </div>
-        `;
+                <label class="full-width">Deskribapena <textarea class="desc-input" data-cat="${cat.titulo}" rows="2"></textarea></label>
+                <label class="full-width">Adibidea <input type="text" class="link-input" data-cat="${cat.titulo}"></label>
+            </div>`;
         contenedor.appendChild(div);
     });
 
-    const selectCentro = document.getElementById("selectCentro");
-    const selectProfesor = document.getElementById("selectProfesor");
-    const inputKodea = document.getElementById("kodea");
-    const inputEmail = document.getElementById("email");
-
-    const listaCentros = [...new Set(Object.values(profesoresDB).map(p => p.centro))].sort();
-    listaCentros.forEach(c => {
-        let opt = document.createElement("option"); opt.value = c; opt.textContent = c;
-        selectCentro.appendChild(opt);
-    });
-
-    selectCentro.addEventListener("change", () => {
-        const centroSel = selectCentro.value;
-        selectProfesor.innerHTML = '<option value="">Aukeratu...</option>';
-        inputEmail.value = ""; inputKodea.value = "";
-        if (centroSel) {
-            selectProfesor.disabled = false;
-            const infoC = Object.values(profesoresDB).find(p => p.centro === centroSel);
-            inputKodea.value = infoC ? infoC.codigo : "";
-            const profes = Object.keys(profesoresDB).filter(n => profesoresDB[n].centro === centroSel);
-            profes.forEach(n => { let o = document.createElement("option"); o.value = n; o.textContent = n; selectProfesor.appendChild(o); });
-            if (profes.length === 1) { 
-                selectProfesor.value = profes[0]; 
-                inputEmail.value = profesoresDB[profes[0]].email; 
-            }
-        } else { selectProfesor.disabled = true; }
-    });
-
-    selectProfesor.addEventListener("change", () => {
-        const p = profesoresDB[selectProfesor.value];
-        inputEmail.value = p ? p.email : "";
-    });
-
+    // --- FIREBASE SETUP ---
     const firebaseConfig = {
         apiKey: "AIzaSyAV_g9Bd29B3kzuZqsHnE6WU4QzttmbhAk",
         authDomain: "ekarpenakapp.firebaseapp.com",
@@ -271,47 +219,68 @@
         messagingSenderId: "958519034694",
         appId: "1:958519034694:web:e07751035d587322379b47"
     };
-
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // --- LÓGICA DE SELECCIÓN ---
+    const selectCentro = document.getElementById("selectCentro");
+    const selectProfesor = document.getElementById("selectProfesor");
+    const inputKodea = document.getElementById("kodea");
+    const inputEmail = document.getElementById("email");
+
+    const listaCentros = [...new Set(Object.values(profesoresDB).map(p => p.centro))].sort();
+    listaCentros.forEach(c => { let o = document.createElement("option"); o.value = c; o.textContent = c; selectCentro.appendChild(o); });
+
+    selectCentro.addEventListener("change", () => {
+        const centroSel = selectCentro.value;
+        selectProfesor.innerHTML = '<option value="">Aukeratu...</option>';
+        if (centroSel) {
+            selectProfesor.disabled = false;
+            const infoC = Object.values(profesoresDB).find(p => p.centro === centroSel);
+            inputKodea.value = infoC.codigo;
+            const profes = Object.keys(profesoresDB).filter(n => profesoresDB[n].centro === centroSel);
+            profes.forEach(n => { let o = document.createElement("option"); o.value = n; o.textContent = n; selectProfesor.appendChild(o); });
+            if (profes.length === 1) { selectProfesor.value = profes[0]; inputEmail.value = profesoresDB[profes[0]].email; }
+        }
+    });
+
+    selectProfesor.addEventListener("change", () => {
+        const p = profesoresDB[selectProfesor.value];
+        inputEmail.value = p ? p.email : "";
+    });
+
+    // --- GUARDADO ---
     document.getElementById("dataForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         const btn = document.getElementById("btnEnviar");
         const descs = document.querySelectorAll(".desc-input");
         const links = document.querySelectorAll(".link-input");
-        
         btn.disabled = true;
-        btn.textContent = "Bidaltzen...";
 
         try {
             for (let i = 0; i < descs.length; i++) {
-                const descVal = descs[i].value.trim();
-                const linkVal = links[i].value.trim();
-
-                if (descVal !== "") {
+                if (descs[i].value.trim() !== "") {
                     await addDoc(collection(db, "ekarpenak"), {
                         ikastetxea: selectCentro.value,
                         kodea: inputKodea.value,
                         izenAbizenak: selectProfesor.value,
                         email: inputEmail.value,
                         aukera: descs[i].dataset.cat,
-                        deskribapena: descVal,
-                        adibidea: linkVal,
+                        deskribapena: descs[i].value.trim(),
+                        adibidea: links[i].value.trim(),
                         fecha: serverTimestamp()
                     });
                 }
             }
             alert("Datuak ondo gorde dira!");
             e.target.reset();
-            selectProfesor.disabled = true;
-        } catch (err) { alert("Errorea: " + err.message); }
-        finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Bidali denak'; }
+        } catch (err) { alert(err.message); }
+        finally { btn.disabled = false; }
     });
 
+    // --- VISUALIZACIÓN ---
     const q = query(collection(db, "ekarpenak"), orderBy("fecha", "desc"));
     onSnapshot(q, (snapshot) => {
-        document.getElementById("loading").style.display = "none";
         const tabla = document.getElementById("tablaDatos");
         tabla.innerHTML = "";
         snapshot.forEach((doc) => {
@@ -321,11 +290,21 @@
                 <td><strong>${d.ikastetxea}</strong><br><small>${d.izenAbizenak}</small></td>
                 <td><span class="opcion-tag">${d.aukera}</span></td>
                 <td>${d.deskribapena}</td>
-                <td>${d.adibidea.includes('http') ? `<a href="${d.adibidea}" target="_blank">Lotura</a>` : d.adibidea}</td>
-            `;
+                <td>${d.adibidea.includes('http') ? `<a href="${d.adibidea}" target="_blank">Lotura</a>` : d.adibidea}</td>`;
             tabla.appendChild(fila);
         });
     });
+
+    // --- SISTEMA DE DESBLOQUEO ---
+    window.desbloquearRespuestas = function() {
+        const pass = prompt("Sartu pasahitza erantzunak ikusteko:");
+        if (pass === "1234") { // <--- CAMBIA AQUÍ TU CONTRASEÑA
+            document.getElementById("overlayPrivacidad").style.display = "none";
+            document.getElementById("tablaCompleta").style.display = "table";
+        } else {
+            alert("Pasahitz okerra!");
+        }
+    };
 </script>
 </body>
 </html>
