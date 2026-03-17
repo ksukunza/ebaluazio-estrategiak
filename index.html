@@ -12,7 +12,6 @@
             --bg: #f3f4f6;
             --white: #ffffff;
             --text: #323130;
-            --danger: #e74c3c;
         }
 
         body {
@@ -75,31 +74,20 @@
         .btn-primary { background-color: var(--primary); color: white; flex: 2; }
         .btn-secondary { background-color: #fff; color: #666; border: 1px solid #ccc; flex: 1; }
 
-        /* TABLA Y FILTRO DE PRIVACIDAD */
-        .table-responsive { overflow-x: auto; margin-top: 30px; position: relative; }
-        
-        #overlayPrivacidad {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            text-align: center;
-            border: 2px dashed #ccc;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-
-        table { width: 100%; border-collapse: separate; border-spacing: 0; display: none; } /* Oculta por defecto */
+        /* TABLA OCULTA */
+        .table-responsive { overflow-x: auto; margin-top: 30px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; display: none; } /* Oculta totalmente */
         thead th { background-color: #f8f9fa; padding: 15px; text-align: left; border-bottom: 2px solid var(--primary); }
         tbody td { padding: 15px; border-bottom: 1px solid #e1dfdd; vertical-align: top; }
 
         .opcion-tag { background-color: #eef7f2; color: #4e8a6b; padding: 3px 8px; border-radius: 10px; font-weight: bold; font-size: 0.8rem; }
         
-        /* Botón Admin Oculto */
         .admin-trigger {
-            margin-top: 40px;
+            margin-top: 50px;
             text-align: center;
-            opacity: 0.3;
+            opacity: 0.2;
         }
-        .admin-trigger:hover { opacity: 1; }
+        .admin-trigger:hover { opacity: 0.8; }
     </style>
 </head>
 <body>
@@ -122,11 +110,6 @@
     </form>
 
     <div class="table-responsive">
-        <div id="overlayPrivacidad">
-            <i class="fa-solid fa-eye-slash fa-3x" style="color: #ccc; margin-bottom: 15px;"></i>
-            <p>Erantzunak ezkutatuta daude une honetan.<br>Dinamizatzaileak sarbidea ematen duenean ikusiko dira.</p>
-        </div>
-
         <table id="tablaCompleta">
             <thead>
                 <tr>
@@ -141,8 +124,8 @@
     </div>
 
     <div class="admin-trigger">
-        <button onclick="desbloquearRespuestas()" style="background: none; color: #ccc; border: 1px solid #eee; padding: 5px 10px; font-size: 10px;">
-            <i class="fa-solid fa-lock"></i> Admin sarbidea
+        <button onclick="desbloquearRespuestas()" style="background: none; color: #ccc; border: none; cursor: pointer; font-size: 10px;">
+            <i class="fa-solid fa-lock"></i>
         </button>
     </div>
 </div>
@@ -151,7 +134,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // --- DATOS PROFESORES (Pegados de tu lista anterior) ---
     const profesoresDB = {
         "Ane Bedayo Pascual": { centro: "CPI Aldaialde IPI", codigo: "010617", email: "a.bedayo@irakasle.eus" },
         "Ana Carmona Poza": { centro: "OLAMENDI BHI", codigo: "012117", email: "a.carmona@irakasle.eus" },
@@ -195,7 +177,6 @@
         { titulo: "Autoebaluazioa (erregulazioa) egiteko", subtitulo: "Zein estrategia hausnarketa autonomoa egiteko (auto-feedbacka)?" }
     ];
 
-    // --- CARGA DE FORMULARIO ---
     const contenedor = document.getElementById("estrategiasContenedor");
     categorias.forEach(cat => {
         const div = document.createElement("div");
@@ -210,7 +191,6 @@
         contenedor.appendChild(div);
     });
 
-    // --- FIREBASE SETUP ---
     const firebaseConfig = {
         apiKey: "AIzaSyAV_g9Bd29B3kzuZqsHnE6WU4QzttmbhAk",
         authDomain: "ekarpenakapp.firebaseapp.com",
@@ -222,7 +202,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // --- LÓGICA DE SELECCIÓN ---
     const selectCentro = document.getElementById("selectCentro");
     const selectProfesor = document.getElementById("selectProfesor");
     const inputKodea = document.getElementById("kodea");
@@ -240,7 +219,6 @@
             inputKodea.value = infoC.codigo;
             const profes = Object.keys(profesoresDB).filter(n => profesoresDB[n].centro === centroSel);
             profes.forEach(n => { let o = document.createElement("option"); o.value = n; o.textContent = n; selectProfesor.appendChild(o); });
-            if (profes.length === 1) { selectProfesor.value = profes[0]; inputEmail.value = profesoresDB[profes[0]].email; }
         }
     });
 
@@ -249,7 +227,6 @@
         inputEmail.value = p ? p.email : "";
     });
 
-    // --- GUARDADO ---
     document.getElementById("dataForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         const btn = document.getElementById("btnEnviar");
@@ -278,7 +255,6 @@
         finally { btn.disabled = false; }
     });
 
-    // --- VISUALIZACIÓN ---
     const q = query(collection(db, "ekarpenak"), orderBy("fecha", "desc"));
     onSnapshot(q, (snapshot) => {
         const tabla = document.getElementById("tablaDatos");
@@ -295,14 +271,13 @@
         });
     });
 
-    // --- SISTEMA DE DESBLOQUEO ---
+    // SISTEMA DISCRETO DE DESBLOQUEO
     window.desbloquearRespuestas = function() {
-        const pass = prompt("Sartu pasahitza erantzunak ikusteko:");
-        if (pass === "4321") { // <--- CAMBIA AQUÍ TU CONTRASEÑA
-            document.getElementById("overlayPrivacidad").style.display = "none";
+        const pass = prompt("Pasahitza:");
+        if (pass === "1234") { 
             document.getElementById("tablaCompleta").style.display = "table";
         } else {
-            alert("Pasahitz okerra!");
+            alert("Okerra!");
         }
     };
 </script>
