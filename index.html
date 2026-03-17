@@ -55,7 +55,6 @@
         
         .campo-autocompletado { background-color: #f0f0f0; color: #777; cursor: not-allowed; }
 
-        /* SECCIONES DE ESTRATEGIA */
         .bloque-estrategia {
             grid-column: 1 / -1;
             background-color: #f0f9f4;
@@ -93,7 +92,6 @@
         .btn-primary { background-color: var(--primary); color: white; flex: 2; }
         .btn-secondary { background-color: #fff; color: #666; border: 1px solid #ccc; flex: 1; }
 
-        /* TABLA */
         .table-responsive { overflow-x: auto; margin-top: 30px; }
         table { width: 100%; border-collapse: separate; border-spacing: 0; }
         thead th { background-color: #f8f9fa; padding: 15px; text-align: left; border-bottom: 2px solid var(--primary); }
@@ -114,8 +112,7 @@
         <label>Kodea <input type="text" id="kodea" class="campo-autocompletado" readonly></label>
         <label>Emaila <input type="email" id="email" class="campo-autocompletado" readonly></label>
 
-        <div id="estrategiasContenedor" style="grid-column: 1 / -1;">
-            </div>
+        <div id="estrategiasContenedor" style="grid-column: 1 / -1;"></div>
 
         <div class="botones">
             <button type="submit" class="btn-primary" id="btnEnviar"><i class="fa-solid fa-paper-plane"></i> Bidali denak</button>
@@ -143,43 +140,42 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // --- 1. TUS DATOS DEL EXCEL ---
     const profesoresDB = {
-"Ane Bedayo Pascual": { centro: "CPI Aldaialde IPI", codigo: "010617", email: "a.bedayo@irakasle.eus" },
-"Ana Carmona Poza": { centro: "OLAMENDI BHI", codigo: "012117", email: "a.carmona@irakasle.eus" },
-"Ane Miren Etxegarai Irigoien": { centro: "KAREMENGO AMA IPI", codigo: "012150", email: "etxegaraiirigoien@irakasle.eus" },
-"Josune Iñarra Laskurain": { centro: "Altza BHI ", codigo: "012224", email: "laskurain@irakasle.eus" },
-"Xabier Garmendia Garcia": { centro: "JM Iparragirre BHI", codigo: "012286", email: "x.garmendia@irakasle.eus" },
-"Iraia San Miguel Lizarralde": { centro: "Soraluze BHI", codigo: "012946", email: "i.sanmiguellizarralde@irakasle.eus" },
-"Matilde Navas Los Arcos": { centro: "Lauaizeta Ikastola BHI", codigo: "012958", email: "matti@irakasle.eus" },
-"Eneritz Garmendia Ollokiegi": { centro: "LEZO BHI", codigo: "012962", email: "eneritzgarmendia@irakasle.eus" },
-"Izaskun Ormaetxea Jauregi": { centro: "Orixe BHI", codigo: "012980", email: "ormaetxea@irakasle.eus" },
-"Cynthia Cubero Larrabeiti": { centro: "Azkoitia BHI", codigo: "012985", email: "c.cubero@irakasle.eus" },
-"Amaya Muniategi-Andicoechea Zubizarreta": { centro: "Arrasate BHI", codigo: "013006", email: "amaiamuni@irakasle.eus" },
-"Olatz Goikoetxeaundia Usandizaga": { centro: "IES Oñati BHI", codigo: "013015", email: "o.goikoetxeaundia@irakasle.eus" },
-"Marta Garcia Gutierrez": { centro: "IES ELGOIBAR BHI", codigo: "013431", email: "m.garciagutierrez@irakasle.eus" },
-"Naiara Lasa Sainz": { centro: "Beasain BHI", codigo: "013461", email: "n.lasa@irakasle.eus" },
-"Gorka Arruzazabala Gomez": { centro: "Antonio Trueba BHI Barakaldo", codigo: "014064", email: "g.gomez@irakasle.eus" },
-"Oihana Urquiza Merino": { centro: "Pagasarribide IPI", codigo: "014140", email: "o.urquiza@irakasle.eus" },
-"Ana Perez Fernandez": { centro: "IES Martín de Bertendona BHI", codigo: "014187", email: "a.perez.f@irakasle.eus" },
-"Eritz Vizcaya Ozaeta": { centro: "J.B. EGUZKITZA MEABE IPI", codigo: "014341", email: "e.vizcaya@irakasle.eus" },
-"Jaime Perez Martin": { centro: "IES JA Zunzunegui BHI", codigo: "014398", email: "j.perezmartin@irakasle.eus" },
-"Virginia Tome Cabero": { centro: "Balmaseda BHI", codigo: "014451", email: "v.tome@irakasle.eus" },
-"Miren Ivon Amorrortu Amarica": { centro: "IES Arratia BHI", codigo: "014456", email: "ibone@irakasle.eus" },
-"IES LUIS BRIÑAS-SANTUTXU BHI ZUZENDARITZA 015075": { centro: "Luis Briñas-Santutxu BHI", codigo: "015075", email: "015075aa@hezkuntza.net" },
-"Eskarne Zabala Lodos": { centro: "Zorrotza bhi", codigo: "015078", email: "eskarnezabala@irakasle.eus" },
-"Miren Gotzone Larrea Gorostiaga": { centro: "IES ETXEBARRI BHI", codigo: "015087", email: "mg.larrea@irakasle.eus" },
-"Gorane Fernandez Beitia": { centro: "Bengoetxe BHI", codigo: "015088", email: "g.fernandezbeitia@irakasle.eus" },
-"Andrea Balentziaga Ibarlucea": { centro: "Juan Orobiogoitia BHI", codigo: "015090", email: "a.balentziaga@irakasle.eus" },
-"Itziar Aparicio Peña": { centro: "IES MUSKIZ BHI", codigo: "015092", email: "i.apariciopena@irakasle.eus" },
-"Itsasne Ordeñana Bengoa": { centro: "SAN INAZIO BHI", codigo: "015191", email: "i.ordenana@irakasle.eus" },
-"Maria Carmen Diez Gutierrez": { centro: "AXULAR BHI", codigo: "015626", email: "maria.carmendiez@irakasle.eus" },
-"Maria Josefa Colmenero Herrera": { centro: "CPI Antonio Trueba IPI", codigo: "015683", email: "colmeneroherrera@irakasle.eus" },
-"Maria Asuncion Requero Zabala": { centro: "Ignacio Ellacuria-Zurbaran BHI", codigo: "015724", email: "requerozabala@irakasle.eus" },
-"Monike Gojenola Elizondo": { centro: "Ermua BHI", codigo: "015779", email: "m.gojenola@irakasle.eus" },
+        "Ane Bedayo Pascual": { centro: "CPI Aldaialde IPI", codigo: "010617", email: "a.bedayo@irakasle.eus" },
+        "Ana Carmona Poza": { centro: "OLAMENDI BHI", codigo: "012117", email: "a.carmona@irakasle.eus" },
+        "Ane Miren Etxegarai Irigoien": { centro: "KAREMENGO AMA IPI", codigo: "012150", email: "etxegaraiirigoien@irakasle.eus" },
+        "Josune Iñarra Laskurain": { centro: "Altza BHI ", codigo: "012224", email: "laskurain@irakasle.eus" },
+        "Xabier Garmendia Garcia": { centro: "JM Iparragirre BHI", codigo: "012286", email: "x.garmendia@irakasle.eus" },
+        "Iraia San Miguel Lizarralde": { centro: "Soraluze BHI", codigo: "012946", email: "i.sanmiguellizarralde@irakasle.eus" },
+        "Matilde Navas Los Arcos": { centro: "Lauaizeta Ikastola BHI", codigo: "012958", email: "matti@irakasle.eus" },
+        "Eneritz Garmendia Ollokiegi": { centro: "LEZO BHI", codigo: "012962", email: "eneritzgarmendia@irakasle.eus" },
+        "Izaskun Ormaetxea Jauregi": { centro: "Orixe BHI", codigo: "012980", email: "ormaetxea@irakasle.eus" },
+        "Cynthia Cubero Larrabeiti": { centro: "Azkoitia BHI", codigo: "012985", email: "c.cubero@irakasle.eus" },
+        "Amaya Muniategi-Andicoechea Zubizarreta": { centro: "Arrasate BHI", codigo: "013006", email: "amaiamuni@irakasle.eus" },
+        "Olatz Goikoetxeaundia Usandizaga": { centro: "IES Oñati BHI", codigo: "013015", email: "o.goikoetxeaundia@irakasle.eus" },
+        "Marta Garcia Gutierrez": { centro: "IES ELGOIBAR BHI", codigo: "013431", email: "m.garciagutierrez@irakasle.eus" },
+        "Naiara Lasa Sainz": { centro: "Beasain BHI", codigo: "013461", email: "n.lasa@irakasle.eus" },
+        "Gorka Arruzazabala Gomez": { centro: "Antonio Trueba BHI Barakaldo", codigo: "014064", email: "g.gomez@irakasle.eus" },
+        "Oihana Urquiza Merino": { centro: "Pagasarribide IPI", codigo: "014140", email: "o.urquiza@irakasle.eus" },
+        "Ana Perez Fernandez": { centro: "IES Martín de Bertendona BHI", codigo: "014187", email: "a.perez.f@irakasle.eus" },
+        "Eritz Vizcaya Ozaeta": { centro: "J.B. EGUZKITZA MEABE IPI", codigo: "014341", email: "e.vizcaya@irakasle.eus" },
+        "Jaime Perez Martin": { centro: "IES JA Zunzunegui BHI", codigo: "014398", email: "j.perezmartin@irakasle.eus" },
+        "Virginia Tome Cabero": { centro: "Balmaseda BHI", codigo: "014451", email: "v.tome@irakasle.eus" },
+        "Miren Ivon Amorrortu Amarica": { centro: "IES Arratia BHI", codigo: "014456", email: "ibone@irakasle.eus" },
+        "IES LUIS BRIÑAS-SANTUTXU BHI ZUZENDARITZA 015075": { centro: "Luis Briñas-Santutxu BHI", codigo: "015075", email: "015075aa@hezkuntza.net" },
+        "Eskarne Zabala Lodos": { centro: "Zorrotza bhi", codigo: "015078", email: "eskarnezabala@irakasle.eus" },
+        "Miren Gotzone Larrea Gorostiaga": { centro: "IES ETXEBARRI BHI", codigo: "015087", email: "mg.larrea@irakasle.eus" },
+        "Gorane Fernandez Beitia": { centro: "Bengoetxe BHI", codigo: "015088", email: "g.fernandezbeitia@irakasle.eus" },
+        "Andrea Balentziaga Ibarlucea": { centro: "Juan Orobiogoitia BHI", codigo: "015090", email: "a.balentziaga@irakasle.eus" },
+        "Itziar Aparicio Peña": { centro: "IES MUSKIZ BHI", codigo: "015092", email: "i.apariciopena@irakasle.eus" },
+        "Itsasne Ordeñana Bengoa": { centro: "SAN INAZIO BHI", codigo: "015191", email: "i.ordenana@irakasle.eus" },
+        "Maria Carmen Diez Gutierrez": { centro: "AXULAR BHI", codigo: "015626", email: "maria.carmendiez@irakasle.eus" },
+        "Maria Josefa Colmenero Herrera": { centro: "CPI Antonio Trueba IPI", codigo: "015683", email: "colmeneroherrera@irakasle.eus" },
+        "Maria Asuncion Requero Zabala": { centro: "Ignacio Ellacuria-Zurbaran BHI", codigo: "015724", email: "requerozabala@irakasle.eus" },
+        "Monike Gojenola Elizondo": { centro: "Ermua BHI", codigo: "015779", email: "m.gojenola@irakasle.eus" }
     };
 
-    // --- 2. CONFIGURACIÓN DE LAS ESTRATEGIAS ---
+    // --- NUEVAS CATEGORÍAS ACTUALIZADAS ---
     const categorias = [
         "Ikas-helburuak partekatzeko estrategiak",
         "Ebaluazioaren diseinua egiteko estrategia",
@@ -190,8 +186,7 @@
 
     const contenedor = document.getElementById("estrategiasContenedor");
 
-    // Generar los campos automáticamente para cada categoría
-    categorias.forEach((cat, index) => {
+    categorias.forEach((cat) => {
         const div = document.createElement("div");
         div.className = "bloque-estrategia";
         div.innerHTML = `
@@ -208,7 +203,6 @@
         contenedor.appendChild(div);
     });
 
-    // --- 3. LÓGICA DE SELECCIÓN (La misma que antes) ---
     const selectCentro = document.getElementById("selectCentro");
     const selectProfesor = document.getElementById("selectProfesor");
     const inputKodea = document.getElementById("kodea");
@@ -242,7 +236,6 @@
         inputEmail.value = p ? p.email : "";
     });
 
-    // --- 4. FIREBASE CONFIG ---
     const firebaseConfig = {
         apiKey: "AIzaSyAV_g9Bd29B3kzuZqsHnE6WU4QzttmbhAk",
         authDomain: "ekarpenakapp.firebaseapp.com",
@@ -255,7 +248,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // --- 5. GUARDAR TODAS LAS ESTRATEGIAS RELLENADAS ---
     document.getElementById("dataForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         const btn = document.getElementById("btnEnviar");
@@ -266,19 +258,17 @@
         btn.textContent = "Bidaltzen...";
 
         try {
-            // Recorremos los 5 bloques
             for (let i = 0; i < descs.length; i++) {
                 const descVal = descs[i].value.trim();
                 const linkVal = links[i].value.trim();
 
-                // Solo guardamos si han escrito algo en la descripción
                 if (descVal !== "") {
                     await addDoc(collection(db, "ekarpenak"), {
                         ikastetxea: selectCentro.value,
                         kodea: inputKodea.value,
                         izenAbizenak: selectProfesor.value,
                         email: inputEmail.value,
-                        aukera: descs[i].dataset.cat, // El título de la categoría
+                        aukera: descs[i].dataset.cat,
                         deskribapena: descVal,
                         adibidea: linkVal,
                         fecha: serverTimestamp()
@@ -292,7 +282,6 @@
         finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Bidali denak'; }
     });
 
-    // --- 6. LEER Y MOSTRAR ---
     const q = query(collection(db, "ekarpenak"), orderBy("fecha", "desc"));
     onSnapshot(q, (snapshot) => {
         document.getElementById("loading").style.display = "none";
