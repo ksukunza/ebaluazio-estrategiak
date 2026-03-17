@@ -197,16 +197,9 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // --- PEGA AQUÍ TUS DATOS DEL EXCEL (ESTRUCTURA PLANA) ---
+    // --- 1. TUS DATOS DEL EXCEL (EN CASTELLANO) ---
     const profesoresDB = {
-"Marta Martin Lopez": { centro: "CPI Samaniego IPI", codigo: " 010613", email: "martamartin@irakasle.eus" },
-"Izarne Aguirre Elorriaga": { centro: "TXORIERRI BHI", codigo: " 014466", email: "i.aguirre@irakasle.eus" },
-"Maialen Garcia Portalo": { centro: "BHI ANITURRI", codigo: "010046", email: "garciaportalo@irakasle.eus" },
-"Ametsa Nerea Fuente Nuñez": { centro: "Los Herran BHI", codigo: "010135", email: "an.fuente@irakasle.eus" },
-"Agurtzane Ugarte Ozaeta": { centro: "MURGIA BHI", codigo: "010157", email: "a.ugarteozaeta@irakasle.eus" },
-"Nagore Iturbe Bilbao": { centro: "IES LAKUA BHI", codigo: "010512", email: "n.iturbe@irakasle.eus" },
-"Sara Corcero Gonzalo": { centro: "Salburua BHI-IES", codigo: "010514", email: "s.corcero@irakasle.eus" },
-"Ane Bedayo Pascual": { centro: "CPI Aldaialde IPI", codigo: "010617", email: "a.bedayo@irakasle.eus" },
+       "Ane Bedayo Pascual": { centro: "CPI Aldaialde IPI", codigo: "010617", email: "a.bedayo@irakasle.eus" },
 "Ana Carmona Poza": { centro: "OLAMENDI BHI", codigo: "012117", email: "a.carmona@irakasle.eus" },
 "Ane Miren Etxegarai Irigoien": { centro: "KAREMENGO AMA IPI", codigo: "012150", email: "etxegaraiirigoien@irakasle.eus" },
 "Josune Iñarra Laskurain": { centro: "Altza BHI ", codigo: "012224", email: "laskurain@irakasle.eus" },
@@ -239,8 +232,7 @@
 "Maria Asuncion Requero Zabala": { centro: "Ignacio Ellacuria-Zurbaran BHI", codigo: "015724", email: "requerozabala@irakasle.eus" },
 "Monike Gojenola Elizondo": { centro: "Ermua BHI", codigo: "015779", email: "m.gojenola@irakasle.eus" },
 
-
-        // ... pega aquí todas las líneas generadas por tu Excel
+        // ... PEGA AQUÍ EL RESTO DE TUS FILAS (ASEGÚRATE DE QUE TERMINEN EN COMA , )
     };
 
     const selectCentro = document.getElementById("selectCentro");
@@ -248,34 +240,45 @@
     const inputKodea = document.getElementById("kodea");
     const inputEmail = document.getElementById("email");
 
-    // Extraer centros únicos de la lista de profesores
-    const centrosUnicos = [...new Set(Object.values(profesoresDB).map(p => p.centro))].sort();
-    centrosUnicos.forEach(centro => {
-        let opt = document.createElement("option");
-        opt.value = centro;
-        opt.textContent = centro;
-        selectCentro.appendChild(opt);
-    });
+    // --- 2. CARGAR EL DESPLEGABLE DE CENTROS ---
+    // Extraemos los nombres de los centros, quitamos duplicados y ordenamos
+    const listaCentros = [...new Set(Object.values(profesoresDB).map(p => p.centro))].sort();
 
-    // Evento al elegir centro: Filtra los profesores
+    if (listaCentros.length > 0) {
+        listaCentros.forEach(nombreCentro => {
+            if (nombreCentro) {
+                let opt = document.createElement("option");
+                opt.value = nombreCentro;
+                opt.textContent = nombreCentro;
+                selectCentro.appendChild(opt);
+            }
+        });
+    } else {
+        console.error("Ez da ikastetxerik aurkitu datuetan. Begiratu 'centro' hitza ondo idatzita dagoen.");
+    }
+
+    // --- 3. LÓGICA AL ELEGIR CENTRO ---
     selectCentro.addEventListener("change", () => {
-        const centroSel = selectCentro.value;
+        const centroSeleccionado = selectCentro.value;
+        
+        // Limpiar campos
         selectProfesor.innerHTML = '<option value="">Aukeratu irakaslea...</option>';
         inputEmail.value = "";
         inputKodea.value = "";
         
-        if (centroSel) {
+        if (centroSeleccionado) {
             selectProfesor.disabled = false;
-            // Buscar código del centro (del primer profesor que coincida)
-            const primerProf = Object.values(profesoresDB).find(p => p.centro === centroSel);
-            inputKodea.value = primerProf ? primerProf.codigo : "";
+            
+            // Rellenar código (buscamos el primer profesor de ese centro para sacar el código)
+            const datosCentro = Object.values(profesoresDB).find(p => p.centro === centroSeleccionado);
+            inputKodea.value = datosCentro ? datosCentro.codigo : "";
 
-            // Filtrar profesores que pertenecen a ese centro
-            Object.keys(profesoresDB).forEach(nombre => {
-                if (profesoresDB[nombre].centro === centroSel) {
+            // Filtrar profesores por centro
+            Object.keys(profesoresDB).forEach(nombreProf => {
+                if (profesoresDB[nombreProf].centro === centroSeleccionado) {
                     let opt = document.createElement("option");
-                    opt.value = nombre;
-                    opt.textContent = nombre;
+                    opt.value = nombreProf;
+                    opt.textContent = nombreProf;
                     selectProfesor.appendChild(opt);
                 }
             });
@@ -284,13 +287,13 @@
         }
     });
 
-    // Evento al elegir profesor: Rellena el email
+    // --- 4. LÓGICA AL ELEGIR PROFESOR ---
     selectProfesor.addEventListener("change", () => {
         const p = profesoresDB[selectProfesor.value];
         inputEmail.value = p ? p.email : "";
     });
 
-    // --- FIREBASE CONFIG ---
+    // --- 5. CONFIGURACIÓN FIREBASE (ASEGÚRATE DE QUE SEA LA TUYA) ---
     const firebaseConfig = {
         apiKey: "AIzaSyAV_g9Bd29B3kzuZqsHnE6WU4QzttmbhAk",
         authDomain: "ekarpenakapp.firebaseapp.com",
@@ -303,6 +306,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // Guardar datos
     document.getElementById("dataForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         const btn = document.getElementById("btnEnviar");
@@ -316,6 +320,7 @@
             adibidea: document.getElementById("adibidea").value,
             fecha: serverTimestamp()
         };
+
         btn.disabled = true;
         try {
             await addDoc(collection(db, "ekarpenak"), datos);
@@ -325,6 +330,7 @@
         finally { btn.disabled = false; }
     });
 
+    // Leer datos en tiempo real
     const q = query(collection(db, "ekarpenak"), orderBy("fecha", "desc"));
     onSnapshot(q, (snapshot) => {
         document.getElementById("loading").style.display = "none";
