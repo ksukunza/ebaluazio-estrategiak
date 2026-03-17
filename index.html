@@ -74,18 +74,21 @@
         .btn-primary { background-color: var(--primary); color: white; flex: 2; }
         .btn-secondary { background-color: #fff; color: #666; border: 1px solid #ccc; flex: 1; }
 
-        /* TABLA OCULTA */
-        .table-responsive { overflow-x: auto; margin-top: 30px; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0; display: none; } /* Oculta totalmente */
+        /* SECCIÓN OCULTA POR DEFECTO */
+        .admin-only { display: none; } 
+        
+        .table-responsive { overflow-x: auto; margin-top: 15px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; }
         thead th { background-color: #f8f9fa; padding: 15px; text-align: left; border-bottom: 2px solid var(--primary); }
         tbody td { padding: 15px; border-bottom: 1px solid #e1dfdd; vertical-align: top; }
 
         .opcion-tag { background-color: #eef7f2; color: #4e8a6b; padding: 3px 8px; border-radius: 10px; font-weight: bold; font-size: 0.8rem; }
         
         .admin-trigger {
-            margin-top: 50px;
+            margin-top: 60px;
             text-align: center;
-            opacity: 0.2;
+            opacity: 0.15;
+            transition: opacity 0.3s;
         }
         .admin-trigger:hover { opacity: 0.8; }
     </style>
@@ -105,26 +108,32 @@
 
         <div class="botones">
             <button type="submit" class="btn-primary" id="btnEnviar"><i class="fa-solid fa-paper-plane"></i> Bidali denak</button>
-            <button type="button" class="btn-secondary" id="exportarCSV"><i class="fa-solid fa-file-csv"></i> CSV</button>
         </div>
     </form>
 
-    <div class="table-responsive">
-        <table id="tablaCompleta">
-            <thead>
-                <tr>
-                    <th>Egilea</th>
-                    <th>Estrategia</th>
-                    <th>Deskribapena</th>
-                    <th>Adibidea</th>
-                </tr>
-            </thead>
-            <tbody id="tablaDatos"></tbody>
-        </table>
+    <div id="seccionAdmin" class="admin-only">
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+            <button type="button" class="btn-secondary" id="exportarCSV" style="padding: 8px 16px; font-size: 0.8rem;">
+                <i class="fa-solid fa-file-csv"></i> CSV deskargatu
+            </button>
+        </div>
+        <div class="table-responsive">
+            <table id="tablaCompleta">
+                <thead>
+                    <tr>
+                        <th>Egilea</th>
+                        <th>Estrategia</th>
+                        <th>Deskribapena</th>
+                        <th>Adibidea</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaDatos"></tbody>
+            </table>
+        </div>
     </div>
 
     <div class="admin-trigger">
-        <button onclick="desbloquearRespuestas()" style="background: none; color: #ccc; border: none; cursor: pointer; font-size: 10px;">
+        <button onclick="desbloquearTodo()" style="background: none; color: #ccc; border: none; cursor: pointer; font-size: 10px;">
             <i class="fa-solid fa-lock"></i>
         </button>
     </div>
@@ -271,15 +280,31 @@
         });
     });
 
-    // SISTEMA DISCRETO DE DESBLOQUEO
-    window.desbloquearRespuestas = function() {
-        const pass = prompt("Pasahitza:");
+    // SISTEMA DE DESBLOQUEO INTEGRADO (TABLA + CSV)
+    window.desbloquearTodo = function() {
+        const pass = prompt("Sartu pasahitza datuak ikusteko:");
         if (pass === "1234") { 
-            document.getElementById("tablaCompleta").style.display = "table";
+            document.getElementById("seccionAdmin").style.display = "block";
         } else {
             alert("Okerra!");
         }
     };
+
+    // LÓGICA CSV
+    document.getElementById("exportarCSV").addEventListener("click", () => {
+        const filas = document.querySelectorAll("#tablaCompleta tr");
+        let csv = "Egilea;Estrategia;Deskribapena;Adibidea\n";
+        filas.forEach((f, i) => {
+            if (i === 0) return;
+            const cols = f.querySelectorAll("td");
+            csv += `"${cols[0].innerText.replace(/\n/g, ' ')}";"${cols[1].innerText}";"${cols[2].innerText}";"${cols[3].innerText}"\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "ebaluazio_estrategiak.csv";
+        link.click();
+    });
 </script>
 </body>
 </html>
