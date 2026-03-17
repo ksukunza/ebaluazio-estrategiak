@@ -65,7 +65,7 @@
         }
 
         .titulo-estrategia { color: var(--primary-dark); font-size: 1.1rem; font-weight: 800; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
-        .subtitulo-estrategia { font-size: 0.85rem; color: #666; font-style: italic; margin-bottom: 15px; padding-left: 24px; line-height: 1.3; }
+        .subtitulo-estrategia { font-size: 0.85rem; color: #666; font-style: italic; margin-bottom: 15px; padding-left: 24px; line-height: 1.4; white-space: pre-line; }
 
         .botones { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
         @media (min-width: 480px) { .botones { flex-direction: row; } }
@@ -88,7 +88,7 @@
 <body>
 
 <div class="contenedor">
-    <h2><i class="fa-solid fa-users-rectangle"></i> Ebaluaziorako estrategia funtzionalak</h2>
+    <h2><i class="fa-solid fa-users-rectangle"></i> Ebaluaziorako estrategiak</h2>
 
     <form id="dataForm">
         <label>Ikastetxea <select id="selectCentro" required><option value="">Aukeratu...</option></select></label>
@@ -136,6 +136,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+    // --- BASE DE DATOS PROFESORES ---
     const profesoresDB = {
         "Ane Bedayo Pascual": { centro: "CPI Aldaialde IPI", codigo: "010617", email: "a.bedayo@irakasle.eus" },
         "Ana Carmona Poza": { centro: "OLAMENDI BHI", codigo: "012117", email: "a.carmona@irakasle.eus" },
@@ -171,14 +172,31 @@
         "Monike Gojenola Elizondo": { centro: "Ermua BHI", codigo: "015779", email: "m.gojenola@irakasle.eus" }
     };
 
+    // --- CATEGORÍAS CON TEXTOS COMPLETOS ---
     const categorias = [
-        { titulo: "Ikas-helburuak partekatzeko estrategiak", subtitulo: "Zein jarduera edo estrategia erabiltzen ditugu ikasleek argi ulertzeko zein diren lortu nahi diren ikas‑helburuak?" },
-        { titulo: "Ebaluazioaren diseinua egiteko estrategia", subtitulo: "Zein jarduera edo estrategia erabiltzen ditugu ebidentzia esanguratsuak lortzeko?" },
-        { titulo: "Kalitatezko feedback emateko", subtitulo: "Zein estrategia edo jarduera erabiltzen ditugu feedbacka eskaintzeko?" },
-        { titulo: "Ko-ebaluazioa egiteko", subtitulo: "Zein estrategia erabiltzen ditugu ikasleek elkarri feedbacka emateko?" },
-        { titulo: "Autoebaluazioa (erregulazioa) egiteko", subtitulo: "Zein estrategia hausnarketa autonomoa egiteko (auto-feedbacka)?" }
+        { 
+            titulo: "Ikas-helburuak partekatzeko estrategiak", 
+            subtitulo: "Zein jarduera edo estrategia erabiltzen ditugu ikasleek argi ulertzeko zein diren lortu nahi diren ikas‑helburuak?\nNola dakite zer ikasi behar duten eta zer egingo duten hori lortzeko?" 
+        },
+        { 
+            titulo: "Ebaluazioaren diseinua egiteko estrategia", 
+            subtitulo: "Zein jarduera edo estrategia erabiltzen ditugu ebidentzia esanguratsuak lortzeko?\nNola biltzen dugu ikasleek dakitenari buruzko informazioa?" 
+        },
+        { 
+            titulo: "Kalitatezko feedback emateko", 
+            subtitulo: "Zein estrategia edo jarduera erabiltzen ditugu feedbacka eskaintzeko?\nNola laguntzen diegu ikasleei aurrera egiten?" 
+        },
+        { 
+            titulo: "Ko-ebaluazioa egiteko", 
+            subtitulo: "Zein estrategia erabiltzen ditugu ikasleek elkarri feedbacka emateko?\nNola bultzatzen dugu ikasleen arteko elkarrekiko laguntza?" 
+        },
+        { 
+            titulo: "Autoebaluazioa (erregulazioa) egiteko", 
+            subtitulo: "Zein estrategia hausnarketa autonomoa egiteko (auto-feedbacka)?\nZein estrategia erabiltzen dugu ikasleak bere ikaskuntza-prozesuaz jabetzeko?" 
+        }
     ];
 
+    // --- GENERAR FORMULARIO ---
     const contenedor = document.getElementById("estrategiasContenedor");
     categorias.forEach(cat => {
         const div = document.createElement("div");
@@ -188,11 +206,12 @@
             <div class="subtitulo-estrategia">${cat.subtitulo}</div>
             <div class="campos-estrategia">
                 <label class="full-width">Deskribapena <textarea class="desc-input" data-cat="${cat.titulo}" rows="2"></textarea></label>
-                <label class="full-width">Adibidea <input type="text" class="link-input" data-cat="${cat.titulo}"></label>
+                <label class="full-width">Adibidea (esteka edo testua) <input type="text" class="link-input" data-cat="${cat.titulo}"></label>
             </div>`;
         contenedor.appendChild(div);
     });
 
+    // --- LÓGICA DE AUTOCOMPLETADO ---
     const selectCentro = document.getElementById("selectCentro");
     const selectProfesor = document.getElementById("selectProfesor");
     const inputKodea = document.getElementById("kodea");
@@ -212,17 +231,17 @@
         
         if (centroSel) {
             selectProfesor.disabled = false;
-            const profesDeEsteCentro = Object.keys(profesoresDB).filter(nombre => profesoresDB[nombre].centro === centroSel);
+            const profesDeEsteCentro = Object.keys(profesoresDB).filter(n => profesoresDB[n].centro === centroSel);
             
-            profesDeEsteCentro.forEach(nombre => {
-                let o = document.createElement("option"); o.value = nombre; o.textContent = nombre;
+            profesDeEsteCentro.forEach(n => {
+                let o = document.createElement("option"); o.value = n; o.textContent = n;
                 selectProfesor.appendChild(o);
             });
 
-            // Código del centro
+            // Rellenar código
             inputKodea.value = profesoresDB[profesDeEsteCentro[0]].codigo;
 
-            // Si solo hay un profesor en ese centro, lo seleccionamos y ponemos su email
+            // Selección automática si solo hay uno
             if (profesDeEsteCentro.length === 1) {
                 selectProfesor.value = profesDeEsteCentro[0];
                 inputEmail.value = profesoresDB[profesDeEsteCentro[0]].email;
@@ -233,14 +252,11 @@
     });
 
     selectProfesor.addEventListener("change", () => {
-        const profeSeleccionado = selectProfesor.value;
-        if (profeSeleccionado && profesoresDB[profeSeleccionado]) {
-            inputEmail.value = profesoresDB[profeSeleccionado].email;
-        } else {
-            inputEmail.value = "";
-        }
+        const p = profesoresDB[selectProfesor.value];
+        inputEmail.value = p ? p.email : "";
     });
 
+    // --- FIREBASE SETUP ---
     const firebaseConfig = {
         apiKey: "AIzaSyAV_g9Bd29B3kzuZqsHnE6WU4QzttmbhAk",
         authDomain: "ekarpenakapp.firebaseapp.com",
@@ -252,6 +268,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // --- GUARDADO ---
     document.getElementById("dataForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         const btn = document.getElementById("btnEnviar");
@@ -281,6 +298,7 @@
         finally { btn.disabled = false; }
     });
 
+    // --- ACTUALIZACIÓN TABLA ---
     const q = query(collection(db, "ekarpenak"), orderBy("fecha", "desc"));
     onSnapshot(q, (snapshot) => {
         const tabla = document.getElementById("tablaDatos");
@@ -297,8 +315,9 @@
         });
     });
 
+    // --- ACCESO ADMIN ---
     window.desbloquearTodo = function() {
-        const pass = prompt("Pasahitza:");
+        const pass = prompt("Sartu pasahitza:");
         if (pass === "1234") { 
             document.getElementById("seccionAdmin").style.display = "block";
         } else {
@@ -306,6 +325,7 @@
         }
     };
 
+    // --- LÓGICA CSV ---
     document.getElementById("exportarCSV").addEventListener("click", () => {
         const filas = document.querySelectorAll("#tablaCompleta tr");
         let csv = "Egilea;Estrategia;Deskribapena;Adibidea\n";
