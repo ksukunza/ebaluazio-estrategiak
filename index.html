@@ -6,83 +6,30 @@
     <title>Ebaluaziorako estrategiak</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary: #76b895;
-            --primary-dark: #4a7a62;
-            --bg: #f3f4f6;
-            --white: #ffffff;
-            --text: #323130;
-        }
-
-        body {
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 10px;
-            line-height: 1.5;
-        }
-
-        .contenedor {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: var(--white);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-        }
-
-        h2 { text-align: center; color: var(--primary); font-size: 1.5rem; margin-bottom: 20px; }
-
-        form {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            margin-bottom: 30px;
-            background-color: #fcfcfc;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-        }
-
-        @media (min-width: 768px) {
-            .contenedor { padding: 40px; }
-            form { grid-template-columns: 1fr 1fr; padding: 25px; gap: 20px; }
-        }
-
+        :root { --primary: #76b895; --primary-dark: #4a7a62; --bg: #f3f4f6; --white: #ffffff; --text: #323130; }
+        body { font-family: "Segoe UI", sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 10px; line-height: 1.5; }
+        .contenedor { max-width: 1000px; margin: 0 auto; background: var(--white); padding: 20px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+        h2 { text-align: center; color: var(--primary); font-size: 1.5rem; }
+        form { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 30px; background: #fcfcfc; padding: 15px; border-radius: 8px; border: 1px solid #e0e0e0; }
+        @media (min-width: 768px) { .contenedor { padding: 40px; } form { grid-template-columns: 1fr 1fr; padding: 25px; gap: 20px; } }
         form label { display: flex; flex-direction: column; font-weight: 600; font-size: 0.9rem; color: #605e5c; }
         form input, form select, form textarea { margin-top: 8px; padding: 12px; font-size: 16px; border: 1px solid #d1d1d1; border-radius: 6px; width: 100%; box-sizing: border-box; }
-        
         .campo-autocompletado { background-color: #f0f0f0; color: #777; cursor: not-allowed; }
-
-        .bloque-estrategia {
-            grid-column: 1 / -1;
-            background-color: #f0f9f4;
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 6px solid var(--primary);
-            margin-top: 10px;
-        }
-
+        .bloque-estrategia { grid-column: 1 / -1; background-color: #f0f9f4; padding: 20px; border-radius: 10px; border-left: 6px solid var(--primary); margin-top: 10px; }
         .titulo-estrategia { color: var(--primary-dark); font-size: 1.1rem; font-weight: 800; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
-        .subtitulo-estrategia { font-size: 0.85rem; color: #666; font-style: italic; margin-bottom: 15px; padding-left: 24px; line-height: 1.4; white-space: pre-line; }
-
+        .subtitulo-estrategia { font-size: 0.85rem; color: #666; font-style: italic; margin-bottom: 15px; padding-left: 24px; white-space: pre-line; }
         .botones { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
         @media (min-width: 480px) { .botones { flex-direction: row; } }
-
         button { padding: 14px 24px; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-primary { background-color: var(--primary); color: white; flex: 2; }
         .btn-secondary { background-color: #fff; color: #666; border: 1px solid #ccc; flex: 1; }
-
         .admin-only { display: none; margin-top: 30px; } 
         .table-responsive { overflow-x: auto; margin-top: 15px; }
         table { width: 100%; border-collapse: separate; border-spacing: 0; }
         thead th { background-color: #f8f9fa; padding: 15px; text-align: left; border-bottom: 2px solid var(--primary); }
         tbody td { padding: 15px; border-bottom: 1px solid #e1dfdd; vertical-align: top; }
         .opcion-tag { background-color: #eef7f2; color: #4e8a6b; padding: 3px 8px; border-radius: 10px; font-weight: bold; font-size: 0.8rem; }
-        
-        .admin-trigger { margin-top: 60px; text-align: center; opacity: 0.15; transition: opacity 0.3s; }
-        .admin-trigger:hover { opacity: 0.8; }
+        .admin-trigger { margin-top: 60px; text-align: center; opacity: 0.15; }
     </style>
 </head>
 <body>
@@ -106,9 +53,7 @@
     <div id="seccionAdmin" class="admin-only">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h3 style="margin:0; color: var(--primary-dark);">Jasotako erantzunak</h3>
-            <button type="button" class="btn-secondary" id="exportarCSV" style="padding: 8px 16px; font-size: 0.8rem;">
-                <i class="fa-solid fa-file-csv"></i> CSV deskargatu
-            </button>
+            <button type="button" class="btn-secondary" id="exportarCSV"><i class="fa-solid fa-file-csv"></i> CSV deskargatu</button>
         </div>
         <div class="table-responsive">
             <table id="tablaCompleta">
@@ -118,8 +63,6 @@
                         <th>Estrategia</th>
                         <th>Deskribapena</th>
                         <th>Adibidea</th>
-                        <th style="display:none">Email</th>
-                        <th style="display:none">Kodea</th>
                     </tr>
                 </thead>
                 <tbody id="tablaDatos"></tbody>
@@ -128,9 +71,7 @@
     </div>
 
     <div class="admin-trigger">
-        <button onclick="desbloquearTodo()" style="background: none; color: #ccc; border: none; cursor: pointer; font-size: 10px;">
-            <i class="fa-solid fa-lock"></i>
-        </button>
+        <button onclick="desbloquearTodo()" style="background:none; color:#ccc; border:none; cursor:pointer; font-size:10px;"><i class="fa-solid fa-lock"></i></button>
     </div>
 </div>
 
@@ -138,11 +79,9 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // --- DATOS OFUSCADOS (PRIVACIDAD) ---
     const datosCodificados = "eyJBbmUgQmVkYXlvIFBhc2N1YWwiOnsiY2VudHJvIjoiQ1BJIEFsZGFpYWxkZSBJUEkiLCJrb2RlYSI6IjAxMDYxNyIsImVtYWlsIjoiYS5iZWRheW9AaXJha2FzbGUuZXVzIn0sIkFuYSBDYXJtb25hIFBvemEiOnsiY2VudHJvIjoiT0xBTUVOREkgQkhJIiwia29kZWEiOiIwMTIxMTciLCJlbWFpbCI6ImEuY2FybW9uYUBpcmFrYXNsZS5ldXMifSwiQW5lIE1pcmVuIEV0eGVnYXJhaSBJcmlnb2llbiI6eyJjZW50cm8iOiJLQVJFTUVOR08gQU1BIElQSSIsImtvZGVhIjoiMDEyMTUwIiwiZW1haWwiOiJldHhlZ2FyYWlpcmlnb2llbkBpcmFrYXNsZS5ldXMifSwiSm9zdW5lIElYXJyYSBMYXNrdXJhaW4iOnsiY2VudHJvIjoiQWx0emEgQkhJICIsImtvZGVhIjoiMDEyMjI0IiwiZW1haWwiOiJsYXNrdXJhaW5AaXJha2FzbGUuZXVzIn0sIlhhYmllciBHYXJtZW5kaWEgR2FyY2lhIjp7ImNlbnRybyI6IkpNIElwYXJyYWdpcnJlIEJISSIsImtvZGVhIjoiMDEyMjg2IiwiZW1haWwiOiJ4Lmdhcm1lbmRpYUBpcmFrYXNsZS5ldXMifSwiSXJhaWEgU2FuIE1pZ3VlbCBMaXphcnJhbGRlIjp7ImNlbnRybyI6IlNvcmFsdXplIEJISSIsImtvZGVhIjoiMDEyOTQ2IiwiZW1haWwiOiJpLnNhbm1pZ3VlbGxpemFycmFsZGVAaXJha2FzbGUuZXVzIn0sIk1hdGlsZGUgTmF2YXMgTG9zIEFyY29zIjp7ImNlbnRybyI6IkxhdWFpemV0YSBJa2FzdG9sYSBCSEkiLCJrb2RlYSI6IjAxMjk1OCIsImVtYWlsIjoibWF0dGlAaXJha2FzbGUuZXVzIn0sIkVuZXJpdHogR2FybWVuZGlhIE9sbG9raWVnaSI6eyJjZW50cm8iOiJMRVpPIEJISSIsImtvZGVhIjoiMDEyOTYyIiwiZW1haWwiOiJlbmVyaXR6Z2FybWVuZGlhQGlyYWthc2xlLmV1cyJ9LCJJemFza3VuIE9ybWFldHhlYSBKYXVyZWdpIjp7ImNlbnRybyI6Ik9yaXhlIEJISSIsImtvZGVhIjoiMDEyOTgwIiwiZW1haWwiOiJvcm1hZXR4ZWFAaXJha2FzbGUuZXVzIn0sIkN5bnRoaWEgQ3ViZXJvIExhcnJhYmVpdGkiOnsiY2VudHJvIjoiQXprb2l0aWEgQkhJIiwia29kZWEiOiIwMTI5ODUiLCJlbWFpbCI6ImMuY3ViZXJvQGlyYWthc2xlLmV1cyJ9LCJBbWF5YSBNdW5pYXRlZ2ktQW5kaWNvZWNoZWEgWnViaXphcnJldGEiOnsiY2VudHJvIjoiQXJyYXNhdGUgQkhJIiwia29kZWEiOiIwMTMwMDYiLCJlbWFpbCI6ImFtYWlhbXVuaUBpcmFrYXNsZS5ldXMifSwiT2xhdHogR29pa29ldHhlYXVuZGlhIFVzYW5kaXphZ2EiOnsiY2VudHJvIjoiSUVTIE/YXRpIEJISSIsImtvZGVhIjoiMDEzMDE1IiwiZW1haWwiOiJvLmdvaWtvZXR4ZWF1bmRpYUBpcmFrYXNsZS5ldXMifSwiTWFydGEgR2FyY2lhIEd1dGllcnJleiI6eyJjZW50cm8iOiJJRVMgRUxHT0lCQVIgQkhJIiwia29kZWEiOiIwMTM0MzEiLCJlbWFpbCI6Im0uZ2FyY2lhZ3V0aWVycmV6QGlyYWthc2xlLmV1cyJ9LCJOYWlhcmEgTGFzYSBTYWlueiI6eyJjZW50cm8iOiJCZWFzYWluIEJISSIsImtvZGVhIjoiMDEzNDYxIiwiZW1haWwiOiJuLmxhc2FAaXJha2FzbGUuZXVzIn0sIkdvcmthIEFycnV6YXphYmFsYSBHb21leiI6eyJjZW50cm8iOiJBbnRvbmlvIFRydWViYSBCSEkgQmFyYWthbGRvIiwia29kZWEiOiIwMTQwNjQiLCJlbWFpbCI6ImcuZ29tZXpAaXJha2FzbGUuZXVzIn0sIk9paGFuYSBVcnF1aXphIE1lcmlubyI6eyJjZW50cm8iOiJQYWdhc2FycmliaWRlIElQSSIsImtvZGVhIjoiMDE0MTQwIiwiZW1haWwiOiJvLnVyY3VpemFAaXJha2FzbGUuZXVzIn0sIkFuYSBQZXJleiBGZXJuYW5kZXoiOnsiY2VudHJvIjoiSUVTIE1hcnTDrW4gZGUgQmVydGVuZG9uYSBCSEkiLCJrb2RlYSI6IjAxNDE4NyIsImVtYWlsIjoiYS5wZXJlei5mQGlyYWthc2xlLmV1cyJ9LCJFcml0eiBWaXpjYXlhIE96YWV0YSI6eyJjZW50cm8iOiJKLkIuIEVHVVpLSVRaQSBNRUFCRSBJUEkiLCJrb2RlYSI6IjAxNDM0MSIsImVtYWlsIjoiZS52aXpjYXlhQGlyYWthc2xlLmV1cyJ9LCJKYWltZSBQZXJleiBNYXJ0aW4iOnsiY2VudHJvIjoiSUVTIEpBIFp1bnp1bmVndWkgQkhJIiwia29kZWEiOiIwMTQzOTgiLCJlbWFpbCI6ImoucGVyZXptYXJ0aW5AaXJha2FzbGUuZXVzIn0sIlZpcmdpbmlhIFRvbWUgQ2FiZXJvIjp7ImNlbnRybyI6IkJhbG1hc2VkYSBCSEkiLCJrb2RlYSI6IjAxNDQ1MSIsImVtYWlsIjoianVsaW9AYmFsbWFzZWRhYmhpLmV1cyJ9LCJNaXJlbiBJdm9uIEFtb3Jyb3J0dSBBbWFyaWNhIjp7ImNlbnRybyI6IklFUyBBcnJhdGlhIEJISSIsImtvZGVhIjoiMDE0NDU2IiwiZW1haWwiOiJpYm9uZUBpcmFrYXNsZS5ldXMifSwiSUVTIExVSVMgQlJJw5FBUy1TQU5UVVRYVSBCSEkgWlVaRU5EQVJJVFpBIDAxNTA3NSI6eyJjZW50cm8iOiJMdWlzIEJyaVx1MDBGMWFzLVNhbnR1dHh1IEJISSIsImtvZGVhIjoiMDE1MDc1IiwiZW1haWwiOiIwMTUwNzVhYUBoZXprdW50emEubmV0In0sIkVza2FybmUgWmFiYWxhIExvZG9zIjp7ImNlbnRybyI6IlpvcnJvdHphIGJoaSIsImtvZGVhIjoiMDE1MDc4IiwiZW1haWwiOiJlc2thcm5lemFiYWxhQGlyYWthc2xlLmV1cyJ9LCJNaXJlbiBHb3R6b25lIExhcnJlYSBHb3Jvc3RpYWdhIjp7ImNlbnRybyI6IklFUyBFVFhFQkFSUkkgQkhJIiwia29kZWEiOiIwMTUwODciLCJlbWFpbCI6Im1nLmxhcnJlYUBpcmFrYXNsZS5ldXMifSwiR29yYW5lIEZlcm5hbmRleiBCZWl0aWEiOnsiY2VudHJvIjoiQmVuZ29ldHhlIEJISSIsImtvZGVhIjoiMDE1MDg4IiwiZW1haWwiOiJnLmZlcm5hbmRlaWJlaXRpYUBpcmFrYXNsZS5ldXMifSwiQW5kcmVhIEJhbGVudHppYWdhIEliYXJsdWNlYSI6eyJjZW50cm8iOiJKdWFuIE9yb2Jpb2dvaXRpYSBCSEkiLCJrb2RlYSI6IjAxNTA5MCIsImVtYWlsIjoiYS5iYWxlbnR6aWFnYUBpcmFrYXNsZS5ldXMifSwiSXR6aWFyIEFwYXJpY2lvIFBlw7FhIjp7ImNlbnRybyI6IklFUyBNVVNL durantIEJISSIsImtvZGVhIjoiMDE1MDkyIiwiZW1haWwiOiJpLmFwYXJpY2lvcGVuYUBpcmFrYXNsZS5ldXMifSwiSXRzYXNuZSBPcmRlw7FhbmEgQmVuZ29hIjp7ImNlbnRybyI6IlNBTiBJTkFaSU8gQkhJIiwia29kZWEiOiIwMTUxOTEiLCJlbWFpbCI6Imkub3JkZW5hbmFAaXJha2FzbGUuZXVzIn0sIk1hcmlhIENhcm1lbiBEaWV6IEd1dGllcnJleiI6eyJjZW50cm8iOiJBWFVMQVIgQkhJIiwia29kZWEiOiIwMTU2MjYiLCJlbWFpbCI6Im1hcmlhLmNhcm1lbmRpZXpAaXJha2FzbGUuZXVzIn0sIk1hcmlhIEpvc2VmYSBDb2xtZW5lcm8gSGVycmVyYSI6eyJjZW50cm8iOiJDUEkgQW50b25pbyBUcnVlYmEgSVBJIiwia29kZWEiOiIwMTU2ODMiLCJlbWFpbCI6ImNvbG1lbmVyb2hlcnJlcmFAaXJha2FzbGUuZXVzIn0sIk1hcmlhIEFzdW5jaW9uIFJlcXVlcm8gWmFiYWxhIjp7ImNlbnRybyI6IklnbmFjaW8gRWxsYWN1cmlhLVp1cmJhcmFuIEJISSIsImtvZGVhIjoiMDE1NzI0IiwiZW1haWwiOiJyZXF1ZXJvemFiYWxhQGlyYWthc2xlLmV1cyJ9LCJNb25pa2UgR29qZW5vbGEgRWxpem9uZG8iOnsiY2VudHJvIjoiRXJtdWEgQkhJIiwia29kZWEiOiIwMTU3NzkiLCJlbWFpbCI6Im0uZ29qZW5vbGFAaXJha2FzbGUuZXVzIn19";
     const profesoresDB = JSON.parse(atob(datosCodificados));
 
-    // --- CATEGORÍAS COMPLETAS ---
     const categorias = [
         { titulo: "Ikas-helburuak partekatzeko estrategiak", subtitulo: "Zein jarduera edo estrategia erabiltzen ditugu ikasleek argi ulertzeko zein diren lortu nahi diren ikas‑helburuak?\nNola dakite zer ikasi behar duten eta zer egingo duten hori lortzeko?" },
         { titulo: "Ebaluazioaren diseinua egiteko estrategia", subtitulo: "Zein jarduera edo estrategia erabiltzen ditugu ebidentzia esanguratsuak lortzeko?\nNola biltzen dugu ikasleek dakitenari buruzko informazioa?" },
@@ -151,151 +90,82 @@
         { titulo: "Autoebaluazioa (erregulazioa) egiteko", subtitulo: "Zein estrategia hausnarketa autonomoa egiteko (auto-feedbacka)?\nZein estrategia erabiltzen dugu ikasleak bere ikaskuntza-prozesuaz jabetzeko?" }
     ];
 
-    const contenedor = document.getElementById("estrategiasContenedor");
+    // Renderizar preguntas
+    const contPregs = document.getElementById("estrategiasContenedor");
     categorias.forEach(cat => {
-        const div = document.createElement("div");
-        div.className = "bloque-estrategia";
-        div.innerHTML = `
-            <div class="titulo-estrategia"><i class="fa-solid fa-chevron-right"></i> ${cat.titulo}</div>
+        const d = document.createElement("div"); d.className = "bloque-estrategia";
+        d.innerHTML = `<div class="titulo-estrategia"><i class="fa-solid fa-chevron-right"></i> ${cat.titulo}</div>
             <div class="subtitulo-estrategia">${cat.subtitulo}</div>
-            <div class="campos-estrategia">
-                <label class="full-width">Deskribapena <textarea class="desc-input" data-cat="${cat.titulo}" rows="2"></textarea></label>
-                <label class="full-width">Adibidea (esteka edo testua) <input type="text" class="link-input" data-cat="${cat.titulo}"></label>
-            </div>`;
-        contenedor.appendChild(div);
+            <label>Deskribapena <textarea class="desc-input" data-cat="${cat.titulo}" rows="2"></textarea></label>
+            <label style="margin-top:10px;">Adibidea (esteka edo testua) <input type="text" class="link-input" data-cat="${cat.titulo}"></label>`;
+        contPregs.appendChild(d);
     });
 
-    // --- LÓGICA DE AUTOCOMPLETADO ---
-    const selectCentro = document.getElementById("selectCentro");
-    const selectProfesor = document.getElementById("selectProfesor");
-    const inputKodea = document.getElementById("kodea");
-    const inputEmail = document.getElementById("email");
+    // Autocompletado
+    const selC = document.getElementById("selectCentro"); const selP = document.getElementById("selectProfesor");
+    const inK = document.getElementById("kodea"); const inE = document.getElementById("email");
+    const centros = [...new Set(Object.values(profesoresDB).map(p => p.centro))].sort();
+    centros.forEach(c => { let o = document.createElement("option"); o.value = c; o.textContent = c; selC.appendChild(o); });
 
-    const centrosUnicos = [...new Set(Object.values(profesoresDB).map(p => p.centro))].sort();
-    centrosUnicos.forEach(c => {
-        let opt = document.createElement("option"); opt.value = c; opt.textContent = c;
-        selectCentro.appendChild(opt);
-    });
-
-    selectCentro.addEventListener("change", () => {
-        const centroSel = selectCentro.value;
-        selectProfesor.innerHTML = '<option value="">Aukeratu...</option>';
-        inputEmail.value = ""; inputKodea.value = "";
-        if (centroSel) {
-            selectProfesor.disabled = false;
-            const profesDeEsteCentro = Object.keys(profesoresDB).filter(n => profesoresDB[n].centro === centroSel);
-            profesDeEsteCentro.forEach(n => {
-                let o = document.createElement("option"); o.value = n; o.textContent = n;
-                selectProfesor.appendChild(o);
-            });
-            inputKodea.value = profesoresDB[profesDeEsteCentro[0]].kodear || profesoresDB[profesDeEsteCentro[0]].codigo;
-            if (profesDeEsteCentro.length === 1) {
-                selectProfesor.value = profesDeEsteCentro[0];
-                inputEmail.value = profesoresDB[profesDeEsteCentro[0]].email;
-            }
-        } else { selectProfesor.disabled = true; }
-    });
-
-    selectProfesor.addEventListener("change", () => {
-        const p = profesoresDB[selectProfesor.value];
-        inputEmail.value = p ? p.email : "";
-    });
-
-    // --- FIREBASE SETUP ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyAV_g9Bd29B3kzuZqsHnE6WU4QzttmbhAk",
-        authDomain: "ekarpenakapp.firebaseapp.com",
-        projectId: "ekarpenakapp",
-        storageBucket: "ekarpenakapp.firebasestorage.app",
-        messagingSenderId: "958519034694",
-        appId: "1:958519034694:web:e07751035d587322379b47"
+    selC.onchange = () => {
+        selP.innerHTML = '<option value="">Aukeratu...</option>'; inE.value = ""; inK.value = "";
+        if (selC.value) {
+            selP.disabled = false;
+            const profes = Object.keys(profesoresDB).filter(n => profesoresDB[n].centro === selC.value);
+            profes.forEach(n => { let o = document.createElement("option"); o.value = n; o.textContent = n; selP.appendChild(o); });
+            inK.value = profesoresDB[profes[0]].kodea;
+            if (profes.length === 1) { selP.value = profes[0]; inE.value = profesoresDB[profes[0]].email; }
+        } else { selP.disabled = true; }
     };
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    selP.onchange = () => { inE.value = profesoresDB[selP.value]?.email || ""; };
 
-    document.getElementById("dataForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById("btnEnviar");
-        const descs = document.querySelectorAll(".desc-input");
-        const links = document.querySelectorAll(".link-input");
-        btn.disabled = true;
+    // Firebase
+    const firebaseConfig = { apiKey: "AIzaSyAV_g9Bd29B3kzuZqsHnE6WU4QzttmbhAk", authDomain: "ekarpenakapp.firebaseapp.com", projectId: "ekarpenakapp", storageBucket: "ekarpenakapp.firebasestorage.app", messagingSenderId: "958519034694", appId: "1:958519034694:web:e07751035d587322379b47" };
+    const app = initializeApp(firebaseConfig); const db = getFirestore(app);
 
+    document.getElementById("dataForm").onsubmit = async (e) => {
+        e.preventDefault(); const btn = document.getElementById("btnEnviar"); btn.disabled = true;
+        const dIn = document.querySelectorAll(".desc-input"); const lIn = document.querySelectorAll(".link-input");
         try {
-            for (let i = 0; i < descs.length; i++) {
-                if (descs[i].value.trim() !== "") {
+            for (let i = 0; i < dIn.length; i++) {
+                if (dIn[i].value.trim()) {
                     await addDoc(collection(db, "ekarpenak"), {
-                        ikastetxea: selectCentro.value,
-                        kodea: inputKodea.value,
-                        izenAbizenak: selectProfesor.value,
-                        email: inputEmail.value,
-                        aukera: descs[i].dataset.cat,
-                        deskribapena: descs[i].value.trim(),
-                        adibidea: links[i].value.trim(),
-                        fecha: serverTimestamp()
+                        ikastetxea: selC.value, kodea: inK.value, izenAbizenak: selP.value, email: inE.value,
+                        aukera: dIn[i].dataset.cat, deskribapena: dIn[i].value.trim(), adibidea: lIn[i].value.trim(), fecha: serverTimestamp()
                     });
                 }
             }
-            alert("Datuak ondo gorde dira!");
-            e.target.reset();
-            selectProfesor.disabled = true;
-        } catch (err) { alert(err.message); }
-        finally { btn.disabled = false; }
-    });
-
-    const q = query(collection(db, "ekarpenak"), orderBy("fecha", "desc"));
-    onSnapshot(q, (snapshot) => {
-        const tabla = document.getElementById("tablaDatos");
-        tabla.innerHTML = "";
-        snapshot.forEach((doc) => {
-            const d = doc.data();
-            const fila = document.createElement("tr");
-            fila.innerHTML = `
-                <td><strong>${d.ikastetxea}</strong><br><small>${d.izenAbizenak}</small></td>
-                <td><span class="opcion-tag">${d.aukera}</span></td>
-                <td>${d.deskribapena}</td>
-                <td>${d.adibidea.includes('http') ? `<a href="${d.adibidea}" target="_blank">Lotura</a>` : d.adibidea}</td>
-                <td style="display:none">${d.email}</td>
-                <td style="display:none">${d.kodea}</td>`;
-            tabla.appendChild(fila);
-        });
-    });
-
-    window.desbloquearTodo = function() {
-        const pass = prompt("Sartu pasahitza:");
-        if (pass === "1234") { 
-            document.getElementById("seccionAdmin").style.display = "block";
-        } else { alert("Okerra!"); }
+            alert("Datuak ondo gorde dira!"); e.target.reset(); selP.disabled = true;
+        } catch (err) { alert(err.message); } finally { btn.disabled = false; }
     };
 
-    document.getElementById("exportarCSV").addEventListener("click", () => {
-        const filas = document.querySelectorAll("#tablaCompleta tr");
-        // Cabecera actualizada con Email y Kodea
-        let csv = "\uFEFFIkastetxea;Irakaslea;Estrategia;Deskribapena;Adibidea;Email;Kodea\n";
-        
-        filas.forEach((f, i) => {
-            if (i === 0) return; // Saltamos cabecera de la tabla HTML
-            const cols = f.querySelectorAll("td");
-            
-            // Separamos Ikastetxea e Irakaslea que vienen en la misma celda visualmente
-            const autorRaw = cols[0].innerText.split("\n");
-            const centro = autorRaw[0] || "";
-            const profe = autorRaw[1] || "";
-            
-            const estrategia = cols[1].innerText;
-            const desc = cols[2].innerText;
-            const link = cols[3].innerText;
-            const mail = cols[4].innerText;
-            const cod = cols[5].innerText;
-
-            csv += `"${centro}";"${profe}";"${estrategia}";"${desc}";"${link}";"${mail}";"${cod}"\n`;
+    // Admin y Tabla
+    let datosParaCSV = [];
+    const q = query(collection(db, "ekarpenak"), orderBy("fecha", "desc"));
+    onSnapshot(q, (snap) => {
+        const t = document.getElementById("tablaDatos"); t.innerHTML = ""; datosParaCSV = [];
+        snap.forEach(doc => {
+            const d = doc.data(); datosParaCSV.push(d);
+            const r = document.createElement("tr");
+            r.innerHTML = `<td><strong>${d.ikastetxea}</strong><br><small>${d.izenAbizenak}</small></td>
+                <td><span class="opcion-tag">${d.aukera}</span></td>
+                <td>${d.deskribapena}</td>
+                <td>${d.adibidea.includes('http') ? `<a href="${d.adibidea}" target="_blank">Lotura</a>` : d.adibidea}</td>`;
+            t.appendChild(r);
         });
-
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "ebaluazio_estrategiak_osoa.csv";
-        link.click();
     });
+
+    window.desbloquearTodo = () => { if(prompt("Pasahitza:") === "1234") document.getElementById("seccionAdmin").style.display = "block"; };
+
+    document.getElementById("exportarCSV").onclick = () => {
+        let csv = "\uFEFFIkastetxea;Irakaslea;Kodea;Email;Estrategia;Deskribapena;Adibidea\n";
+        datosParaCSV.forEach(d => {
+            csv += `"${d.ikastetxea}";"${d.izenAbizenak}";"${d.kodea}";"${d.email}";"${d.aukera}";"${d.deskribapena.replace(/"/g, '""')}";"${d.adibidea.replace(/"/g, '""')}"\n`;
+        });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+        link.download = "ebaluazio_estrategiak_osoa.csv"; link.click();
+    };
 </script>
 </body>
 </html>
