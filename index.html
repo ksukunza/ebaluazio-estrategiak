@@ -27,10 +27,10 @@
         th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
         th { background: #f8f8f8; }
         
-        /* Estilo del Candado mejorado */
-        .admin-trigger-zone { text-align: center; margin-top: 60px; padding: 20px; cursor: pointer; }
-        .btn-lock-hidden { background: none; border: none; color: #ccc; font-size: 20px; cursor: pointer; opacity: 0.3; transition: opacity 0.3s; padding: 10px; }
-        .btn-lock-hidden:hover { opacity: 1; color: var(--primary); }
+        /* Candado Infalible */
+        .admin-trigger-zone { text-align: center; margin: 80px 0 20px 0; }
+        #masterLock { background: #eee; border: 1px solid #ccc; color: #999; font-size: 24px; padding: 15px 25px; border-radius: 50%; cursor: pointer; opacity: 0.5; }
+        #masterLock:hover { opacity: 1; background: #ddd; color: #333; }
     </style>
 </head>
 <body>
@@ -95,21 +95,15 @@
     </div>
 
     <div class="admin-trigger-zone">
-        <button id="masterLock" class="btn-lock-hidden" title="Admin">
+        <button id="masterLock" onclick="abrirAdmin()" title="Admin Mode">
             <i class="fa-solid fa-lock"></i>
         </button>
     </div>
 </div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    const dC = "eyJBbmUgQmVkYXlvIFBhc2N1YWwiOnsiY2VudHJvIjoiQ1BJIEFsZGFpYWxkZSBJUEkiLCJrb2RlYSI6IjAxMDYxNyIsImVtYWlsIjoiYS5iZWRheW9AaXJha2FzbGUuZXVzIn0sIkFuYSBDYXJtb25hIFBvemEiOnsiY2VudHJvIjoiT0xBTUVOREkgQkhJIiwia29kZWEiOiIwMTIxMTciLCJlbWFpbCI6ImEuY2FybW9uYUBpcmFrYXNsZS5ldXMifSwiQW5lIE1pcmVuIEV0eGVnYXJhaSBJcmlnb2llbiI6eyJjZW50cm8iOiJLQVJFTUVOR08gQU1BIElQSSIsImtvZGVhIjoiMDEyMTUwIiwiZW1haWwiOiJldHhlZ2FyYWlpcmlnb2llbkBpcmFrYXNsZS5ldXMifSwiSm9zdW5lIElYXJyYSBMYXNrdXJhaW4iOnsiY2VudHJvIjoiQWx0emEgQkhJICIsImtvZGVhIjoiMDEyMjI0IiwiZW1haWwiOiJsYXNrdXJhaW5AaXJha2FzbGUuZXVzIn0sIlhhYmllciBHYXJtZW5kaWEgR2FyY2lhIjp7ImNlbnRybyI6IkpNIElwYXJyYWdpcnJlIEJISSIsImtvZGVhIjoiMDEyMjg2IiwiZW1haWwiOiJ4Lmdhcm1lbmRpYUBpcmFrYXNsZS5ldXMifSwiSXJhaWEgU2FuIE1pZ3VlbCBMaXphcnJhbGRlIjp7ImNlbnRybyI6IlNvcmFsdXplIEJISSIsImtvZGVhIjoiMDEyOTQ2IiwiZW1haWwiOiJpLnNhbm1pZ3VlbGxpemFycmFsZGVAaXJha2FzbGUuZXVzIn0sIk1hdGlsZGUgTmF2YXMgTG9zIEFyY29zIjp7ImNlbnRybyI6IkxhdWFpemV0YSBJa2FzdG9sYSBCSEkiLCJrb2RlYSI6IjAxMjk1OCIsImVtYWlsIjoibWF0dGlAaXJha2FzbGUuZXVzIn0sIkVuZXJpdHogR2FybWVuZGlhIE9sbG9raWVnaSI6eyJjZW50cm8iOiJMRVpPIEJISSIsImtvZGVhIjoiMDEyOTYyIiwiZW1haWwiOiJlbmVyaXR6Z2FybWVuZGlhQGlyYWthc2xlLmV1cyJ9LCJJemFza3VuIE9ybWFldHhlYSBKYXVyZWdpIjp7ImNlbnRybyI6Ik9yaXhlIEJISSIsImtvZGVhIjoiMDEyOTgwIiwiZW1haWwiOiJvcm1hZXR4ZWFAaXJha2FzbGUuZXVzIn0sIkN5bnRoaWEgQ3ViZXJvIExhcnJhYmVpdGkiOnsiY2VudHJvIjoiQXprb2l0aWEgQkhJIiwia29kZWEiOiIwMTI5ODUiLCJlbWFpbCI6ImMuY3ViZXJvQGlyYWthc2xlLmV1cyJ9LCJBbWF5YSBNdW5pYXRlZ2ktQW5kaWNvZWNoZWEgWnViaXphcnJldGEiOnsiY2VudHJvIjoiQXJyYXNhdGUgQkhJIiwia29kZWEiOiIwMTMwMDYiLCJlbWFpbCI6ImFtYWlhbXVuaUBpcmFrYXNsZS5ldXMifSwiT2xhdHogR29pa29ldHhlYXVuZGlhIFVzYW5kaXphZ2EiOnsiY2VudHJvIjoiSUVTIE/YXRpIEJISSIsImtvZGVhIjoiMDEzMDE1IiwiZW1haWwiOiJvLmdvaWtvZXR4ZWF1bmRpYUBpcmFrYXNsZS5ldXMifSwiTWFydGEgR2FyY2lhIEd1dGllcnJleiI6eyJjZW50cm8iOiJJRVMgRUxHT0lCQVIgQkhJIiwia29kZWEiOiIwMTM0MzEiLCJlbWFpbCI6Im0uZ2FyY2lhZ3V0aWVycmV6QGlyYWthc2xlLmV1cyJ9LCJOYWlhcmEgTGFzYSBTYWlueiI6eyJjZW50cm8iOiJCZWFzYWluIEJISSIsImtvZGVhIjoiMDEzNDYxIiwiZW1haWwiOiJuLmxhc2FAaXJha2FzbGUuZXVzIn0sIkdvcmthIEFycnV6YXphYmFsYSBHb21leiI6eyJjZW50cm8iOiJBbnRvbmlvIFRydWViYSBCSEkgQmFyYWthbGRvIiwia29kZWEiOiIwMTQwNjQiLCJlbWFpbCI6ImcuZ29tZXpAaXJha2FzbGUuZXVzIn0sIk9paGFuYSBVcnF1aXphIE1lcmlubyI6eyJjZW50cm8iOiJQYWdhc2FycmliaWRlIElQSSIsImtvZGVhIjoiMDE0MTQwIiwiZW1haWwiOiJvLnVyY3VpemFAaXJha2FzbGUuZXVzIn0sIkFuYSBQZXJleiBGZXJuYW5kZXoiOnsiY2VudHJvIjoiSUVTIE1hcnTDrW4gZGUgQmVydGVuZG9uYSBCSEkiLCJrb2RlYSI6IjAxNDE4NyIsImVtYWlsIjoiYS5wZXJlei5mQGlyYWthc2xlLmV1cyJ9LCJFcml0eiBWaXpjYXlhIE96YWV0YSI6eyJjZW50cm8iOiJKLkIuIEVHVVpLSVRaQSBNRUFCRSBJUEkiLCJrb2RlYSI6IjAxNDM0MSIsImVtYWlsIjoiZS52aXpjYXlhQGlyYWthc2xlLmV1cyJ9LCJKYWltZSBQZXJleiBNYXJ0aW4iOnsiY2VudHJvIjoiSUVTIEpBIFp1bnp1bmVndWkgQkhJIiwia29kZWEiOiIwMTQzOTgiLCJlbWFpbCI6ImoucGVyZXptYXJ0aW5AaXJha2FzbGUuZXVzIn0sIlZpcmdpbmlhIFRvbWUgQ2FiZXJvIjp7ImNlbnRybyI6IkJhbG1hc2VkYSBCSEkiLCJrb2RlYSI6IjAxNDQ1MSIsImVtYWlsIjoianVsaW9AYmFsbWFzZWRhYmhpLmV1cyJ9LCJNaXJlbiBJdm9uIEFtb3Jyb3J0dSBBbWFyaWNhIjp7ImNlbnRybyI6IklFUyBBcnJhdGlhIEJISSIsImtvZGVhIjoiMDE0NDU2IiwiZW1haWwiOiJpYm9uZUBpcmFrYXNsZS5ldXMifSwiSUVTIExVSVMgQlJJw5FBUy1TQU5UVVRYVSBCSEkgWlVaRU5EQVJJVFpBIDAxNTA3NSI6eyJjZW50cm8iOiJMdWlzIEJyaVx1MDBGMWFzLVNhbnR1dHh1IEJISSIsImtvZGVhIjoiMDE1MDc1IiwiZW1haWwiOiIwMTUwNzVhYUBoZXprdW50emEubmV0In0sIkVza2FybmUgWmFiYWxhIExvZG9zIjp7ImNlbnRybyI6IlpvcnJvdHphIGJoaSIsImtvZGVhIjoiMDE1MDc4IiwiZW1haWwiOiJlc2thcm5lemFiYWxhQGlyYWthc2xlLmV1cyJ9LCJNaXJlbiBHb3R6b25lIExhcnJlYSBHb3Jvc3RpYWdhIjp7ImNlbnRybyI6IklFUyBFVFhFQkFSUkkgQkhJIiwia29kZWEiOiIwMTUwODciLCJlbWFpbCI6Im1nLmxhcnJlYUBpcmFrYXNsZS5ldXMifSwiR29yYW5lIEZlcm5hbmRleiBCZWl0aWEiOnsiY2VudHJvIjoiQmVuZ29ldHhlIEJISSIsImtvZGVhIjoiMDE1MDg4IiwiZW1haWwiOiJnLmZlcm5hbmRlaWJlaXRpYUBpcmFrYXNsZS5ldXMifSwiQW5kcmVhIEJhbGVudHppYWdhIEliYXJsdWNlYSI6eyJjZW50cm8iOiJKdWFuIE9yb2Jpb2dvaXRpYSBCSEkiLCJrb2RlYSI6IjAxNTA5MCIsImVtYWlsIjoiYS5iYWxlbnR6aWFnYUBpcmFrYXNsZS5ldXMifSwiSXR6aWFyIEFwYXJpY2lvIFBlw7FhIjp7ImNlbnRybyI6IklFUyBNVVNL durantIEJISSIsImtvZGVhIjoiMDE1MDkyIiwiZW1haWwiOiJpLmFwYXJpY2lvcGVuYUBpcmFrYXNsZS5ldXMifSwiSXRzYXNuZSBPcmRlw7FhbmEgQmVuZ29hIjp7ImNlbnRybyI6IlNBTiBJTkFaSU8gQkhJIiwia29kZWEiOiIwMTUxOTEiLCJlbWFpbCI6Imkub3JkZW5hbmFAaXJha2FzbGUuZXVzIn0sIk1hcmlhIENhcm1lbiBEaWV6IEd1dGllcnJleiI6eyJjZW50cm8iOiJBWFVMQVIgQkhJIiwia29kZWEiOiIwMTU2MjYiLCJlbWFpbCI6Im1hcmlhLmNhcm1lbmRpZXpAaXJha2FzbGUuZXVzIn0sIk1hcmlhIEpvc2VmYSBDb2xtZW5lcm8gSGVycmVyYSI6eyJjZW50cm8iOiJDUEkgQW50b25pbyBUcnVlYmEgSVBJIiwia29kZWEiOiIwMTU2ODMiLCJlbWFpbCI6ImNvbG1lbmVyb2hlcnJlcmFAaXJha2FzbGUuZXVzIn0sIk1hcmlhIEFzdW5jaW9uIFJlcXVlcm8gWmFiYWxhIjp7ImNlbnRybyI6IklnbmFjaW8gRWxsYWN1cmlhLVp1cmJhcmFuIEJISSIsImtvZGVhIjoiMDE1NzI0IiwiZW1haWwiOiJyZXF1ZXJvemFiYWxhQGlyYWthc2xlLmV1cyJ9LCJNb25pa2UgR29qZW5vbGEgRWxpem9uZG8iOnsiY2VudHJvIjoiRXJtdWEgQkhJIiwia29kZWEiOiIwMTU3NzkiLCJlbWFpbCI6Im0uZ29qZW5vbGFAaXJha2FzbGUuZXVzIn19";
-    const profesoresDB = JSON.parse(atob(dC));
-
-    // LÓGICA DE ADMIN (AL PRINCIPIO PARA EVITAR ERRORES)
-    document.getElementById("masterLock").addEventListener("click", () => {
+<script>
+    // FUNCIÓN DE DESBLOQUEO TRADICIONAL (FUERA DE MODULOS)
+    function abrirAdmin() {
         const pass = prompt("Sartu pasahitza:");
         if (pass === "1234") {
             document.getElementById("seccionAdmin").style.display = "block";
@@ -117,7 +111,15 @@
         } else if (pass !== null) {
             alert("Pasahitz okerra!");
         }
-    });
+    }
+</script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const dC = "eyJBbmUgQmVkYXlvIFBhc2N1YWwiOnsiY2VudHJvIjoiQ1BJIEFsZGFpYWxkZSBJUEkiLCJrb2RlYSI6IjAxMDYxNyIsImVtYWlsIjoiYS5iZWRheW9AaXJha2FzbGUuZXVzIn0sIkFuYSBDYXJtb25hIFBvemEiOnsiY2VudHJvIjoiT0xBTUVOREkgQkhJIiwia29kZWEiOiIwMTIxMTciLCJlbWFpbCI6ImEuY2FybW9uYUBpcmFrYXNsZS5ldXMifSwiQW5lIE1pcmVuIEV0eGVnYXJhaSBJcmlnb2llbiI6eyJjZW50cm8iOiJLQVJFTUVOR08gQU1BIElQSSIsImtvZGVhIjoiMDEyMTUwIiwiZW1haWwiOiJldHhlZ2FyYWlpcmlnb2llbkBpcmFrYXNsZS5ldXMifSwiSm9zdW5lIElYXJyYSBMYXNrdXJhaW4iOnsiY2VudHJvIjoiQWx0emEgQkhJICIsImtvZGVhIjoiMDEyMjI0IiwiZW1haWwiOiJsYXNrdXJhaW5AaXJha2FzbGUuZXVzIn0sIlhhYmllciBHYXJtZW5kaWEgR2FyY2lhIjp7ImNlbnRybyI6IkpNIElwYXJyYWdpcnJlIEJISSIsImtvZGVhIjoiMDEyMjg2IiwiZW1haWwiOiJ4Lmdhcm1lbmRpYUBpcmFrYXNsZS5ldXMifSwiSXJhaWEgU2FuIE1pZ3VlbCBMaXphcnJhbGRlIjp7ImNlbnRybyI6IlNvcmFsdXplIEJISSIsImtvZGVhIjoiMDEyOTQ2IiwiZW1haWwiOiJpLnNhbm1pZ3VlbGxpemFycmFsZGVAaXJha2FzbGUuZXVzIn0sIk1hdGlsZGUgTmF2YXMgTG9zIEFyY29zIjp7ImNlbnRybyI6IkxhdWFpemV0YSBJa2FzdG9sYSBCSEkiLCJrb2RlYSI6IjAxMjk1OCIsImVtYWlsIjoibWF0dGlAaXJha2FzbGUuZXVzIn0sIkVuZXJpdHogR2FybWVuZGlhIE9sbG9raWVnaSI6eyJjZW50cm8iOiJMRVpPIEJISSIsImtvZGVhIjoiMDEyOTYyIiwiZW1haWwiOiJlbmVyaXR6Z2FybWVuZGlhQGlyYWthc2xlLmV1cyJ9LCJJemFza3VuIE9ybWFldHhlYSBKYXVyZWdpIjp7ImNlbnRybyI6Ik9yaXhlIEJISSIsImtvZGVhIjoiMDEyOTgwIiwiZW1haWwiOiJvcm1hZXR4ZWFAaXJha2FzbGUuZXVzIn0sIkN5bnRoaWEgQ3ViZXJvIExhcnJhYmVpdGkiOnsiY2VudHJvIjoiQXprb2l0aWEgQkhJIiwia29kZWEiOiIwMTI5ODUiLCJlbWFpbCI6ImMuY3ViZXJvQGlyYWthc2xlLmV1cyJ9LCJBbWF5YSBNdW5pYXRlZ2ktQW5kaWNvZWNoZWEgWnViaXphcnJldGEiOnsiY2VudHJvIjoiQXJyYXNhdGUgQkhJIiwia29kZWEiOiIwMTMwMDYiLCJlbWFpbCI6ImFtYWlhbXVuaUBpcmFrYXNsZS5ldXMifSwiT2xhdHogR29pa29ldHhlYXVuZGlhIFVzYW5kaXphZ2EiOnsiY2VudHJvIjoiSUVTIE/YXRpIEJISSIsImtvZGVhIjoiMDEzMDE1IiwiZW1haWwiOiJvLmdvaWtvZXR4ZWF1bmRpYUBpcmFrYXNsZS5ldXMifSwiTWFydGEgR2FyY2lhIEd1dGllcnJleiI6eyJjZW50cm8iOiJJRVMgRUxHT0lCQVIgQkhJIiwia29kZWEiOiIwMTM0MzEiLCJlbWFpbCI6Im0uZ2FyY2lhZ3V0aWVycmV6QGlyYWthc2xlLmV1cyJ9LCJOYWlhcmEgTGFzYSBTYWlueiI6eyJjZW50cm8iOiJCZWFzYWluIEJISSIsImtvZGVhIjoiMDEzNDYxIiwiZW1haWwiOiJuLmxhc2FAaXJha2FzbGUuZXVzIn0sIkdvcmthIEFycnV6YXphYmFsYSBHb21leiI6eyJjZW50cm8iOiJBbnRvbmlvIFRydWViYSBCSEkgQmFyYWthbGRvIiwia29kZWEiOiIwMTQwNjQiLCJlbWFpbCI6ImcuZ29tZXpAaXJha2FzbGUuZXVzIn0sIk9paGFuYSBVcnF1aXphIE1lcmlubyI6eyJjZW50cm8iOiJQYWdhc2FycmliaWRlIElQSSIsImtvZGVhIjoiMDE0MTQwIiwiZW1haWwiOiJvLnVyY3VpemFAaXJha2FzbGUuZXVzIn0sIkFuYSBQZXJleiBGZXJuYW5kZXoiOnsiY2VudHJvIjoiSUVTIE1hcnTDrW4gZGUgQmVydGVuZG9uYSBCSEkiLCJrb2RlYSI6IjAxNDE4NyIsImVtYWlsIjoiYS5wZXJlei5mQGlyYWthc2xlLmV1cyJ9LCJFcml0eiBWaXpjYXlhIE96YWV0YSI6eyJjZW50cm8iOiJKLkIuIEVHVVpLSVRaQSBNRUFCRSBJUEkiLCJrb2RlYSI6IjAxNDM0MSIsImVtYWlsIjoiZS52aXpjYXlhQGlyYWthc2xlLmV1cyJ9LCJKYWltZSBQZXJleiBNYXJ0aW4iOnsiY2VudHJvIjoiSUVTIEpBIFp1bnp1bmVndWkgQkhJIiwia29kZWEiOiIwMTQzOTgiLCJlbWFpbCI6ImoucGVyZXptYXJ0aW5AaXJha2FzbGUuZXVzIn0sIlZpcmdpbmlhIFRvbWUgQ2FiZXJvIjp7ImNlbnRybyI6IkJhbG1hc2VkYSBCSEkiLCJrb2RlYSI6IjAxNDQ1MSIsImVtYWlsIjoianVsaW9AYmFsbWFzZWRhYmhpLmV1cyJ9LCJNaXJlbiBJdm9uIEFtb3Jyb3J0dSBBbWFyaWNhIjp7ImNlbnRybyI6IklFUyBBcnJhdGlhIEJISSIsImtvZGVhIjoiMDE0NDU2IiwiZW1haWwiOiJpYm9uZUBpcmFrYXNsZS5ldXMifSwiSUVTIExVSVMgQlJJw5FBUy1TQU5UVVRYVSBCSEkgWlVaRU5EQVJJVFpBIDAxNTA3NSI6eyJjZW50cm8iOiJMdWlzIEJyaVx1MDBGMWFzLVNhbnR1dHh1IEJISSIsImtvZGVhIjoiMDE1MDc1IiwiZW1haWwiOiIwMTUwNzVhYUBoZXprdW50emEubmV0In0sIkVza2FybmUgWmFiYWxhIExvZG9zIjp7ImNlbnRybyI6IlpvcnJvdHphIGJoaSIsImtvZGVhIjoiMDE1MDc4IiwiZW1haWwiOiJlc2thcm5lemFiYWxhQGlyYWthc2xlLmV1cyJ9LCJNaXJlbiBHb3R6b25lIExhcnJlYSBHb3Jvc3RpYWdhIjp7ImNlbnRybyI6IklFUyBFVFhFQkFSUkkgQkhJIiwia29kZWEiOiIwMTUwODciLCJlbWFpbCI6Im1nLmxhcnJlYUBpcmFrYXNsZS5ldXMifSwiR29yYW5lIEZlcm5hbmRleiBCZWl0aWEiOnsiY2VudHJvIjoiQmVuZ29ldHhlIEJISSIsImtvZGVhIjoiMDE1MDg4IiwiZW1haWwiOiJnLmZlcm5hbmRlaWJlaXRpYUBpcmFrYXNsZS5ldXMifSwiQW5kcmVhIEJhbGVudHppYWdhIEliYXJsdWNlYSI6eyJjZW50cm8iOiJKdWFuIE9yb2Jpb2dvaXRpYSBCSEkiLCJrb2RlYSI6IjAxNTA5MCIsImVtYWlsIjoiYS5iYWxlbnR6aWFnYUBpcmFrYXNsZS5ldXMifSwiSXR6aWFyIEFwYXJpY2lvIFBlw7FhIjp7ImNlbnRybyI6IklFUyBNVVNL durantIEJISSIsImtvZGVhIjoiMDE1MDkyIiwiZW1haWwiOiJpLmFwYXJpY2lvcGVuYUBpcmFrYXNsZS5ldXMifSwiSXRzYXNuZSBPcmRlw7FhbmEgQmVuZ29hIjp7ImNlbnRybyI6IlNBTiBJTkFaSU8gQkhJIiwia29kZWEiOiIwMTUxOTEiLCJlbWFpbCI6Imkub3JkZW5hbmFAaXJha2FzbGUuZXVzIn0sIk1hcmlhIENhcm1lbiBEaWV6IEd1dGllcnJleiI6eyJjZW50cm8iOiJBWFVMQVIgQkhJIiwia29kZWEiOiIwMTU2MjYiLCJlbWFpbCI6Im1hcmlhLmNhcm1lbmRpZXpAaXJha2FzbGUuZXVzIn0sIk1hcmlhIEpvc2VmYSBDb2xtZW5lcm8gSGVycmVyYSI6eyJjZW50cm8iOiJDUEkgQW50b25pbyBUcnVlYmEgSVBJIiwia29kZWEiOiIwMTU2ODMiLCJlbWFpbCI6ImNvbG1lbmVyb2hlcnJlcmFAaXJha2FzbGUuZXVzIn0sIk1hcmlhIEFzdW5jaW9uIFJlcXVlcm8gWmFiYWxhIjp7ImNlbnRybyI6IklnbmFjaW8gRWxsYWN1cmlhLVp1cmJhcmFuIEJISSIsImtvZGVhIjoiMDE1NzI0IiwiZW1haWwiOiJyZXF1ZXJvemFiYWxhQGlyYWthc2xlLmV1cyJ9LCJNb25pa2UgR29qZW5vbGEgRWxpem9uZG8iOnsiY2VudHJvIjoiRXJtdWEgQkhJIiwia29kZWEiOiIwMTU3NzkiLCJlbWFpbCI6Im0uZ29qZW5vbGFAaXJha2FzbGUuZXVzIn19";
+    const profesoresDB = JSON.parse(atob(dC));
 
     // AUTOCOMPLETADO
     const sC = document.getElementById("selectCentro"); const sP = document.getElementById("selectProfesor");
@@ -158,7 +160,7 @@
         } catch (err) { alert("Errorea: " + err.message); btn.disabled = false; }
     };
 
-    // DATOS TABLA Y CSV
+    // TABLA
     let datosMemoria = [];
     onSnapshot(query(collection(db, "ekarpenak"), orderBy("fecha", "desc")), (snap) => {
         const t = document.getElementById("tablaDatos"); t.innerHTML = ""; datosMemoria = [];
@@ -166,7 +168,7 @@
             const d = doc.data(); datosMemoria.push(d);
             const r = document.createElement("tr");
             r.innerHTML = `<td><strong>${d.ikastetxea}</strong><br><small>${d.izenAbizenak}</small></td>
-                <td><span class="opcion-tag">${d.aukera}</span></td><td>${d.deskribapena}</td><td>${d.adibidea}</td>`;
+                <td><span style="font-size:0.7rem; background:#eee; padding:2px 5px; border-radius:4px;">${d.aukera}</span></td><td>${d.deskribapena}</td><td>${d.adibidea}</td>`;
             t.appendChild(r);
         });
     });
