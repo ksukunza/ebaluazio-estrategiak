@@ -114,10 +114,12 @@
             <table id="tablaCompleta">
                 <thead>
                     <tr>
-                        <th>Egilea</th>
+                        <th>Egilea / Ikastetxea</th>
                         <th>Estrategia</th>
                         <th>Deskribapena</th>
                         <th>Adibidea</th>
+                        <th style="display:none">Email</th>
+                        <th style="display:none">Kodea</th>
                     </tr>
                 </thead>
                 <tbody id="tablaDatos"></tbody>
@@ -136,76 +138,19 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // --- BASE DE DATOS PROFESORES ---
-    const profesoresDB = {
-"Marta Martin Lopez": { centro: "Samaniego IPI", codigo: " 010613", email: "martamartin@irakasle.eus" },
-"Izarne Aguirre Elorriaga": { centro: "Txorierri BHI", codigo: " 014466", email: "i.aguirre@irakasle.eus" },
-"Maialen Garcia Portalo": { centro: "Aniturri BHI", codigo: "010046", email: "garciaportalo@irakasle.eus" },
-"Ametsa Nerea Fuente Nuñez": { centro: "Los Herran BHI", codigo: "010135", email: "an.fuente@irakasle.eus" },
-"Agurtzane Ugarte Ozaeta": { centro: "Murgia BHI", codigo: "010157", email: "a.ugarteozaeta@irakasle.eus" },
-"Nagore Iturbe Bilbao": { centro: "Lakua BHI", codigo: "010512", email: "n.iturbe@irakasle.eus" },
-"Sara Corcero Gonzalo": { centro: "Salburua BHI", codigo: "010514", email: "s.corcero@irakasle.eus" },
-"Ane Bedayo Pascual": { centro: "Aldaialde IPI", codigo: "010617", email: "a.bedayo@irakasle.eus" },
-"Ana Carmona Poza": { centro: "Olamendi BHI", codigo: "012117", email: "a.carmona@irakasle.eus" },
-"Ane Miren Etxegarai Irigoien": { centro: "Karmengo Ama IPI", codigo: "012150", email: "etxegaraiirigoien@irakasle.eus" },
-"Josune Iñarra Laskurain": { centro: "Altza BHI ", codigo: "012224", email: "laskurain@irakasle.eus" },
-"Xabier Garmendia Garcia": { centro: "JM Iparragirre BHI", codigo: "012286", email: "x.garmendia@irakasle.eus" },
-"Iraia San Miguel Lizarralde": { centro: "Soraluze BHI", codigo: "012946", email: "i.sanmiguellizarralde@irakasle.eus" },
-"Matilde Navas Los Arcos": { centro: "Lauaizeta Ikastola BHI", codigo: "012958", email: "matti@irakasle.eus" },
-"Eneritz Garmendia Ollokiegi": { centro: "Lezo BHI", codigo: "012962", email: "eneritzgarmendia@irakasle.eus" },
-"Izaskun Ormaetxea Jauregi": { centro: "Orixe BHI", codigo: "012980", email: "ormaetxea@irakasle.eus" },
-"Cynthia Cubero Larrabeiti": { centro: "Azkoitia BHI", codigo: "012985", email: "c.cubero@irakasle.eus" },
-"Amaya Muniategi-Andicoechea Zubizarreta": { centro: "Arrasate BHI", codigo: "013006", email: "amaiamuni@irakasle.eus" },
-"Olatz Goikoetxeaundia Usandizaga": { centro: "Oñati BHI", codigo: "013015", email: "o.goikoetxeaundia@irakasle.eus" },
-"Marta Garcia Gutierrez": { centro: "Elgoibar BHI", codigo: "013431", email: "m.garciagutierrez@irakasle.eus" },
-"Naiara Lasa Sainz": { centro: "Beasain BHI", codigo: "013461", email: "n.lasa@irakasle.eus" },
-"Gorka Arruzazabala Gomez": { centro: "Antonio Trueba BHI Barakaldo", codigo: "014064", email: "g.gomez@irakasle.eus" },
-"Oihana Urquiza Merino": { centro: "Pagasarribide IPI", codigo: "014140", email: "o.urquiza@irakasle.eus" },
-"Ana Perez Fernandez": { centro: "Martín de Bertendona BHI", codigo: "014187", email: "a.perez.f@irakasle.eus" },
-"Eritz Vizcaya Ozaeta": { centro: "J.B. Eguzkitza Meabe IPI", codigo: "014341", email: "e.vizcaya@irakasle.eus" },
-"Jaime Perez Martin": { centro: "JA Zunzunegui BHI", codigo: "014398", email: "j.perezmartin@irakasle.eus" },
-"Virginia Tome Cabero": { centro: "Balmaseda BHI", codigo: "014451", email: "v.tome@irakasle.eus" },
-"Miren Ivon Amorrortu Amarica": { centro: "Arratia BHI", codigo: "014456", email: "ibone@irakasle.eus" },
-"Edorta Petralanda Sanjines": { centro: "Luis Briñas-Santutxu BHI", codigo: "015075", email: "e.petralanda@irakasle.eus" },
-"Eskarne Zabala Lodos": { centro: "Zorrotza BHI", codigo: "015078", email: "eskarnezabala@irakasle.eus" },
-"Miren Gotzone Larrea Gorostiaga": { centro: "Etxebarri BHI", codigo: "015087", email: "mg.larrea@irakasle.eus" },
-"Gorane Fernandez Beitia": { centro: "Bengoetxe BHI", codigo: "015088", email: "g.fernandezbeitia@irakasle.eus" },
-"Andrea Balentziaga Ibarlucea": { centro: "Juan Orobiogoitia BHI", codigo: "015090", email: "a.balentziaga@irakasle.eus" },
-"Itziar Aparicio Peña": { centro: "Muskiz BHI", codigo: "015092", email: "i.apariciopena@irakasle.eus" },
-"Itsasne Ordeñana Bengoa": { centro: "San Inazio BHI", codigo: "015191", email: "i.ordenana@irakasle.eus" },
-"Maria Carmen Diez Gutierrez": { centro: "Axular BHI", codigo: "015626", email: "maria.carmendiez@irakasle.eus" },
-"Maria Josefa Colmenero Herrera": { centro: "Antonio Trueba IPI", codigo: "015683", email: "colmeneroherrera@irakasle.eus" },
-"Maria Asuncion Requero Zabala": { centro: "Ignacio Ellacuria-Zurbaran BHI", codigo: "015724", email: "requerozabala@irakasle.eus" },
-"Monike Gojenola Elizondo": { centro: "Ermua BHI", codigo: "015779", email: "m.gojenola@irakasle.eus" },
+    // --- DATOS OFUSCADOS (PRIVACIDAD) ---
+    const datosCodificados = "eyJBbmUgQmVkYXlvIFBhc2N1YWwiOnsiY2VudHJvIjoiQ1BJIEFsZGFpYWxkZSBJUEkiLCJrb2RlYSI6IjAxMDYxNyIsImVtYWlsIjoiYS5iZWRheW9AaXJha2FzbGUuZXVzIn0sIkFuYSBDYXJtb25hIFBvemEiOnsiY2VudHJvIjoiT0xBTUVOREkgQkhJIiwia29kZWEiOiIwMTIxMTciLCJlbWFpbCI6ImEuY2FybW9uYUBpcmFrYXNsZS5ldXMifSwiQW5lIE1pcmVuIEV0eGVnYXJhaSBJcmlnb2llbiI6eyJjZW50cm8iOiJLQVJFTUVOR08gQU1BIElQSSIsImtvZGVhIjoiMDEyMTUwIiwiZW1haWwiOiJldHhlZ2FyYWlpcmlnb2llbkBpcmFrYXNsZS5ldXMifSwiSm9zdW5lIElYXJyYSBMYXNrdXJhaW4iOnsiY2VudHJvIjoiQWx0emEgQkhJICIsImtvZGVhIjoiMDEyMjI0IiwiZW1haWwiOiJsYXNrdXJhaW5AaXJha2FzbGUuZXVzIn0sIlhhYmllciBHYXJtZW5kaWEgR2FyY2lhIjp7ImNlbnRybyI6IkpNIElwYXJyYWdpcnJlIEJISSIsImtvZGVhIjoiMDEyMjg2IiwiZW1haWwiOiJ4Lmdhcm1lbmRpYUBpcmFrYXNsZS5ldXMifSwiSXJhaWEgU2FuIE1pZ3VlbCBMaXphcnJhbGRlIjp7ImNlbnRybyI6IlNvcmFsdXplIEJISSIsImtvZGVhIjoiMDEyOTQ2IiwiZW1haWwiOiJpLnNhbm1pZ3VlbGxpemFycmFsZGVAaXJha2FzbGUuZXVzIn0sIk1hdGlsZGUgTmF2YXMgTG9zIEFyY29zIjp7ImNlbnRybyI6IkxhdWFpemV0YSBJa2FzdG9sYSBCSEkiLCJrb2RlYSI6IjAxMjk1OCIsImVtYWlsIjoibWF0dGlAaXJha2FzbGUuZXVzIn0sIkVuZXJpdHogR2FybWVuZGlhIE9sbG9raWVnaSI6eyJjZW50cm8iOiJMRVpPIEJISSIsImtvZGVhIjoiMDEyOTYyIiwiZW1haWwiOiJlbmVyaXR6Z2FybWVuZGlhQGlyYWthc2xlLmV1cyJ9LCJJemFza3VuIE9ybWFldHhlYSBKYXVyZWdpIjp7ImNlbnRybyI6Ik9yaXhlIEJISSIsImtvZGVhIjoiMDEyOTgwIiwiZW1haWwiOiJvcm1hZXR4ZWFAaXJha2FzbGUuZXVzIn0sIkN5bnRoaWEgQ3ViZXJvIExhcnJhYmVpdGkiOnsiY2VudHJvIjoiQXprb2l0aWEgQkhJIiwia29kZWEiOiIwMTI5ODUiLCJlbWFpbCI6ImMuY3ViZXJvQGlyYWthc2xlLmV1cyJ9LCJBbWF5YSBNdW5pYXRlZ2ktQW5kaWNvZWNoZWEgWnViaXphcnJldGEiOnsiY2VudHJvIjoiQXJyYXNhdGUgQkhJIiwia29kZWEiOiIwMTMwMDYiLCJlbWFpbCI6ImFtYWlhbXVuaUBpcmFrYXNsZS5ldXMifSwiT2xhdHogR29pa29ldHhlYXVuZGlhIFVzYW5kaXphZ2EiOnsiY2VudHJvIjoiSUVTIE/YXRpIEJISSIsImtvZGVhIjoiMDEzMDE1IiwiZW1haWwiOiJvLmdvaWtvZXR4ZWF1bmRpYUBpcmFrYXNsZS5ldXMifSwiTWFydGEgR2FyY2lhIEd1dGllcnJleiI6eyJjZW50cm8iOiJJRVMgRUxHT0lCQVIgQkhJIiwia29kZWEiOiIwMTM0MzEiLCJlbWFpbCI6Im0uZ2FyY2lhZ3V0aWVycmV6QGlyYWthc2xlLmV1cyJ9LCJOYWlhcmEgTGFzYSBTYWlueiI6eyJjZW50cm8iOiJCZWFzYWluIEJISSIsImtvZGVhIjoiMDEzNDYxIiwiZW1haWwiOiJuLmxhc2FAaXJha2FzbGUuZXVzIn0sIkdvcmthIEFycnV6YXphYmFsYSBHb21leiI6eyJjZW50cm8iOiJBbnRvbmlvIFRydWViYSBCSEkgQmFyYWthbGRvIiwia29kZWEiOiIwMTQwNjQiLCJlbWFpbCI6ImcuZ29tZXpAaXJha2FzbGUuZXVzIn0sIk9paGFuYSBVcnF1aXphIE1lcmlubyI6eyJjZW50cm8iOiJQYWdhc2FycmliaWRlIElQSSIsImtvZGVhIjoiMDE0MTQwIiwiZW1haWwiOiJvLnVyY3VpemFAaXJha2FzbGUuZXVzIn0sIkFuYSBQZXJleiBGZXJuYW5kZXoiOnsiY2VudHJvIjoiSUVTIE1hcnTDrW4gZGUgQmVydGVuZG9uYSBCSEkiLCJrb2RlYSI6IjAxNDE4NyIsImVtYWlsIjoiYS5wZXJlei5mQGlyYWthc2xlLmV1cyJ9LCJFcml0eiBWaXpjYXlhIE96YWV0YSI6eyJjZW50cm8iOiJKLkIuIEVHVVpLSVRaQSBNRUFCRSBJUEkiLCJrb2RlYSI6IjAxNDM0MSIsImVtYWlsIjoiZS52aXpjYXlhQGlyYWthc2xlLmV1cyJ9LCJKYWltZSBQZXJleiBNYXJ0aW4iOnsiY2VudHJvIjoiSUVTIEpBIFp1bnp1bmVndWkgQkhJIiwia29kZWEiOiIwMTQzOTgiLCJlbWFpbCI6ImoucGVyZXptYXJ0aW5AaXJha2FzbGUuZXVzIn0sIlZpcmdpbmlhIFRvbWUgQ2FiZXJvIjp7ImNlbnRybyI6IkJhbG1hc2VkYSBCSEkiLCJrb2RlYSI6IjAxNDQ1MSIsImVtYWlsIjoianVsaW9AYmFsbWFzZWRhYmhpLmV1cyJ9LCJNaXJlbiBJdm9uIEFtb3Jyb3J0dSBBbWFyaWNhIjp7ImNlbnRybyI6IklFUyBBcnJhdGlhIEJISSIsImtvZGVhIjoiMDE0NDU2IiwiZW1haWwiOiJpYm9uZUBpcmFrYXNsZS5ldXMifSwiSUVTIExVSVMgQlJJw5FBUy1TQU5UVVRYVSBCSEkgWlVaRU5EQVJJVFpBIDAxNTA3NSI6eyJjZW50cm8iOiJMdWlzIEJyaVx1MDBGMWFzLVNhbnR1dHh1IEJISSIsImtvZGVhIjoiMDE1MDc1IiwiZW1haWwiOiIwMTUwNzVhYUBoZXprdW50emEubmV0In0sIkVza2FybmUgWmFiYWxhIExvZG9zIjp7ImNlbnRybyI6IlpvcnJvdHphIGJoaSIsImtvZGVhIjoiMDE1MDc4IiwiZW1haWwiOiJlc2thcm5lemFiYWxhQGlyYWthc2xlLmV1cyJ9LCJNaXJlbiBHb3R6b25lIExhcnJlYSBHb3Jvc3RpYWdhIjp7ImNlbnRybyI6IklFUyBFVFhFQkFSUkkgQkhJIiwia29kZWEiOiIwMTUwODciLCJlbWFpbCI6Im1nLmxhcnJlYUBpcmFrYXNsZS5ldXMifSwiR29yYW5lIEZlcm5hbmRleiBCZWl0aWEiOnsiY2VudHJvIjoiQmVuZ29ldHhlIEJISSIsImtvZGVhIjoiMDE1MDg4IiwiZW1haWwiOiJnLmZlcm5hbmRlaWJlaXRpYUBpcmFrYXNsZS5ldXMifSwiQW5kcmVhIEJhbGVudHppYWdhIEliYXJsdWNlYSI6eyJjZW50cm8iOiJKdWFuIE9yb2Jpb2dvaXRpYSBCSEkiLCJrb2RlYSI6IjAxNTA5MCIsImVtYWlsIjoiYS5iYWxlbnR6aWFnYUBpcmFrYXNsZS5ldXMifSwiSXR6aWFyIEFwYXJpY2lvIFBlw7FhIjp7ImNlbnRybyI6IklFUyBNVVNL durantIEJISSIsImtvZGVhIjoiMDE1MDkyIiwiZW1haWwiOiJpLmFwYXJpY2lvcGVuYUBpcmFrYXNsZS5ldXMifSwiSXRzYXNuZSBPcmRlw7FhbmEgQmVuZ29hIjp7ImNlbnRybyI6IlNBTiBJTkFaSU8gQkhJIiwia29kZWEiOiIwMTUxOTEiLCJlbWFpbCI6Imkub3JkZW5hbmFAaXJha2FzbGUuZXVzIn0sIk1hcmlhIENhcm1lbiBEaWV6IEd1dGllcnJleiI6eyJjZW50cm8iOiJBWFVMQVIgQkhJIiwia29kZWEiOiIwMTU2MjYiLCJlbWFpbCI6Im1hcmlhLmNhcm1lbmRpZXpAaXJha2FzbGUuZXVzIn0sIk1hcmlhIEpvc2VmYSBDb2xtZW5lcm8gSGVycmVyYSI6eyJjZW50cm8iOiJDUEkgQW50b25pbyBUcnVlYmEgSVBJIiwia29kZWEiOiIwMTU2ODMiLCJlbWFpbCI6ImNvbG1lbmVyb2hlcnJlcmFAaXJha2FzbGUuZXVzIn0sIk1hcmlhIEFzdW5jaW9uIFJlcXVlcm8gWmFiYWxhIjp7ImNlbnRybyI6IklnbmFjaW8gRWxsYWN1cmlhLVp1cmJhcmFuIEJISSIsImtvZGVhIjoiMDE1NzI0IiwiZW1haWwiOiJyZXF1ZXJvemFiYWxhQGlyYWthc2xlLmV1cyJ9LCJNb25pa2UgR29qZW5vbGEgRWxpem9uZG8iOnsiY2VudHJvIjoiRXJtdWEgQkhJIiwia29kZWEiOiIwMTU3NzkiLCJlbWFpbCI6Im0uZ29qZW5vbGFAaXJha2FzbGUuZXVzIn19";
+    const profesoresDB = JSON.parse(atob(datosCodificados));
 
-
-    };
-
-    // --- CATEGORÍAS CON TEXTOS COMPLETOS ---
+    // --- CATEGORÍAS COMPLETAS ---
     const categorias = [
-        { 
-            titulo: "Ikas-helburuak partekatzeko estrategiak", 
-            subtitulo: "Zein jarduera edo estrategia erabiltzen ditugu ikasleek argi ulertzeko zein diren lortu nahi diren ikas‑helburuak?\nNola dakite zer ikasi behar duten eta zer egingo duten hori lortzeko?" 
-        },
-        { 
-            titulo: "Ebaluazioaren diseinua egiteko estrategia", 
-            subtitulo: "Zein jarduera edo estrategia erabiltzen ditugu ebidentzia esanguratsuak lortzeko?\nNola biltzen dugu ikasleek dakitenari buruzko informazioa?" 
-        },
-        { 
-            titulo: "Kalitatezko feedback emateko", 
-            subtitulo: "Zein estrategia edo jarduera erabiltzen ditugu feedbacka eskaintzeko?\nNola laguntzen diegu ikasleei aurrera egiten?" 
-        },
-        { 
-            titulo: "Ko-ebaluazioa egiteko", 
-            subtitulo: "Zein estrategia erabiltzen ditugu ikasleek elkarri feedbacka emateko?\nNola bultzatzen dugu ikasleen arteko elkarrekiko laguntza?" 
-        },
-        { 
-            titulo: "Autoebaluazioa (erregulazioa) egiteko", 
-            subtitulo: "Zein estrategia hausnarketa autonomoa egiteko (auto-feedbacka)?\nZein estrategia erabiltzen dugu ikasleak bere ikaskuntza-prozesuaz jabetzeko?" 
-        }
+        { titulo: "Ikas-helburuak partekatzeko estrategiak", subtitulo: "Zein jarduera edo estrategia erabiltzen ditugu ikasleek argi ulertzeko zein diren lortu nahi diren ikas‑helburuak?\nNola dakite zer ikasi behar duten eta zer egingo duten hori lortzeko?" },
+        { titulo: "Ebaluazioaren diseinua egiteko estrategia", subtitulo: "Zein jarduera edo estrategia erabiltzen ditugu ebidentzia esanguratsuak lortzeko?\nNola biltzen dugu ikasleek dakitenari buruzko informazioa?" },
+        { titulo: "Kalitatezko feedback emateko", subtitulo: "Zein estrategia edo jarduera erabiltzen ditugu feedbacka eskaintzeko?\nNola laguntzen diegu ikasleei aurrera egiten?" },
+        { titulo: "Ko-ebaluazioa egiteko", subtitulo: "Zein estrategia erabiltzen ditugu ikasleek elkarri feedbacka emateko?\nNola bultzatzen dugu ikasleen arteko elkarrekiko laguntza?" },
+        { titulo: "Autoebaluazioa (erregulazioa) egiteko", subtitulo: "Zein estrategia hausnarketa autonomoa egiteko (auto-feedbacka)?\nZein estrategia erabiltzen dugu ikasleak bere ikaskuntza-prozesuaz jabetzeko?" }
     ];
 
-    // --- GENERAR FORMULARIO ---
     const contenedor = document.getElementById("estrategiasContenedor");
     categorias.forEach(cat => {
         const div = document.createElement("div");
@@ -235,29 +180,20 @@
     selectCentro.addEventListener("change", () => {
         const centroSel = selectCentro.value;
         selectProfesor.innerHTML = '<option value="">Aukeratu...</option>';
-        inputEmail.value = ""; 
-        inputKodea.value = "";
-        
+        inputEmail.value = ""; inputKodea.value = "";
         if (centroSel) {
             selectProfesor.disabled = false;
             const profesDeEsteCentro = Object.keys(profesoresDB).filter(n => profesoresDB[n].centro === centroSel);
-            
             profesDeEsteCentro.forEach(n => {
                 let o = document.createElement("option"); o.value = n; o.textContent = n;
                 selectProfesor.appendChild(o);
             });
-
-            // Rellenar código
-            inputKodea.value = profesoresDB[profesDeEsteCentro[0]].codigo;
-
-            // Selección automática si solo hay uno
+            inputKodea.value = profesoresDB[profesDeEsteCentro[0]].kodear || profesoresDB[profesDeEsteCentro[0]].codigo;
             if (profesDeEsteCentro.length === 1) {
                 selectProfesor.value = profesDeEsteCentro[0];
                 inputEmail.value = profesoresDB[profesDeEsteCentro[0]].email;
             }
-        } else {
-            selectProfesor.disabled = true;
-        }
+        } else { selectProfesor.disabled = true; }
     });
 
     selectProfesor.addEventListener("change", () => {
@@ -277,7 +213,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // --- GUARDADO ---
     document.getElementById("dataForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         const btn = document.getElementById("btnEnviar");
@@ -307,7 +242,6 @@
         finally { btn.disabled = false; }
     });
 
-    // --- ACTUALIZACIÓN TABLA ---
     const q = query(collection(db, "ekarpenak"), orderBy("fecha", "desc"));
     onSnapshot(q, (snapshot) => {
         const tabla = document.getElementById("tablaDatos");
@@ -319,34 +253,47 @@
                 <td><strong>${d.ikastetxea}</strong><br><small>${d.izenAbizenak}</small></td>
                 <td><span class="opcion-tag">${d.aukera}</span></td>
                 <td>${d.deskribapena}</td>
-                <td>${d.adibidea.includes('http') ? `<a href="${d.adibidea}" target="_blank">Lotura</a>` : d.adibidea}</td>`;
+                <td>${d.adibidea.includes('http') ? `<a href="${d.adibidea}" target="_blank">Lotura</a>` : d.adibidea}</td>
+                <td style="display:none">${d.email}</td>
+                <td style="display:none">${d.kodea}</td>`;
             tabla.appendChild(fila);
         });
     });
 
-    // --- ACCESO ADMIN ---
     window.desbloquearTodo = function() {
         const pass = prompt("Sartu pasahitza:");
         if (pass === "1234") { 
             document.getElementById("seccionAdmin").style.display = "block";
-        } else {
-            alert("Okerra!");
-        }
+        } else { alert("Okerra!"); }
     };
 
-    // --- LÓGICA CSV ---
     document.getElementById("exportarCSV").addEventListener("click", () => {
         const filas = document.querySelectorAll("#tablaCompleta tr");
-        let csv = "Egilea;Estrategia;Deskribapena;Adibidea\n";
+        // Cabecera actualizada con Email y Kodea
+        let csv = "\uFEFFIkastetxea;Irakaslea;Estrategia;Deskribapena;Adibidea;Email;Kodea\n";
+        
         filas.forEach((f, i) => {
-            if (i === 0) return;
+            if (i === 0) return; // Saltamos cabecera de la tabla HTML
             const cols = f.querySelectorAll("td");
-            csv += `"${cols[0].innerText.replace(/\n/g, ' ')}";"${cols[1].innerText}";"${cols[2].innerText}";"${cols[3].innerText}"\n`;
+            
+            // Separamos Ikastetxea e Irakaslea que vienen en la misma celda visualmente
+            const autorRaw = cols[0].innerText.split("\n");
+            const centro = autorRaw[0] || "";
+            const profe = autorRaw[1] || "";
+            
+            const estrategia = cols[1].innerText;
+            const desc = cols[2].innerText;
+            const link = cols[3].innerText;
+            const mail = cols[4].innerText;
+            const cod = cols[5].innerText;
+
+            csv += `"${centro}";"${profe}";"${estrategia}";"${desc}";"${link}";"${mail}";"${cod}"\n`;
         });
+
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = "ebaluazio_estrategiak.csv";
+        link.download = "ebaluazio_estrategiak_osoa.csv";
         link.click();
     });
 </script>
