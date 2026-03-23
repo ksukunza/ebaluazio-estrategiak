@@ -5,6 +5,107 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ebaluaziorako estrategiak</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        // DATOS DIRECTOS (COMO AL PRINCIPIO, SIN CODIFICAR)
+        const profesoresDB = {
+            "Ane Bedayo Pascual": { "centro": "CPI Aldaialde IPI", "kodea": "010617", "email": "a.bedayo@irakasle.eus" },
+            "Ana Carmona Poza": { "centro": "OLAMENDI BHI", "kodea": "012117", "email": "a.carmona@irakasle.eus" },
+            "Ane Miren Etxegarai Irigoien": { "centro": "KAREMENGO AMA IPI", "kodea": "012150", "email": "etxegaraiirigoien@irakasle.eus" },
+            "Josune Iarra Laskurain": { "centro": "Altza BHI ", "kodea": "012224", "email": "laskurain@irakasle.eus" },
+            "Xabier Garmendia Garcia": { "centro": "JM Iparragirre BHI", "kodea": "012286", "email": "x.garmendia@irakasle.eus" },
+            "Iraia San Miguel Lizarralde": { "centro": "Soraluze BHI", "kodea": "012946", "email": "i.sanmiguellizarralde@irakasle.eus" },
+            "Matilde Navas Los Arcos": { "centro": "Lauaizeta Ikastola BHI", "kodea": "012958", "email": "matti@irakasle.eus" },
+            "Eneritz Garmendia Ollokiegi": { "centro": "LEZO BHI", "kodea": "012962", "email": "eneritzgarmendia@irakasle.eus" },
+            "Izaskun Ormaetxea Jauregi": { "centro": "Orixe BHI", "kodea": "012980", "email": "ormaetxea@irakasle.eus" },
+            "Cynthia Cubero Larrabeiti": { "centro": "Azkoitia BHI", "kodea": "012985", "email": "c.cubero@irakasle.eus" },
+            "Amaya Muniategi-Andicoechea Zubizarreta": { "centro": "Arrasate BHI", "kodea": "013006", "email": "amaiamuni@irakasle.eus" },
+            "Olatz Goikoetxeaundia Usandizaga": { "centro": "IES Oñati BHI", "kodea": "013015", "email": "o.goikoetxeaundia@irakasle.eus" },
+            "Marta Garcia Gutierrez": { "centro": "IES ELGOIBAR BHI", "kodea": "013431", "email": "m.garciagutierrez@irakasle.eus" },
+            "Naiara Lasa Sainz": { "centro": "Beasain BHI", "kodea": "013461", "email": "n.lasa@irakasle.eus" },
+            "Gorka Arruzabala Gomez": { "centro": "Antonio Trueba BHI Barakaldo", "kodea": "014064", "email": "g.gomez@irakasle.eus" },
+            "Oihana Urquiza Merino": { "centro": "Pagasarribide IPI", "kodea": "014140", "email": "o.urcuiza@irakasle.eus" },
+            "Ana Perez Fernandez": { "centro": "IES Martín de Bertendona BHI", "kodea": "014187", "email": "a.perez.f@irakasle.eus" },
+            "Eritz Vizcaya Ozaeta": { "centro": "J.B. EGUZKITZA MEABE IPI", "kodea": "014341", "email": "e.vizcaya@irakasle.eus" },
+            "Jaime Perez Martin": { "centro": "IES JA Zunzunegui BHI", "kodea": "014398", "email": "j.perezmartin@irakasle.eus" },
+            "Virginia Tome Cabero": { "centro": "Balmaseda BHI", "kodea": "014451", "email": "julio@balmasedabhi.eus" },
+            "Miren Ivon Amorrortu Amarica": { "centro": "IES Arratia BHI", "kodea": "014456", "email": "ibone@irakasle.eus" },
+            "IES LUIS BRIÑAS-SANTUTXU BHI": { "centro": "Luis Briñas-Santutxu BHI", "kodea": "015075", "email": "015075aa@hezkuntza.net" },
+            "Eskarne Zabala Lodos": { "centro": "Zorrotza bhi", "kodea": "015078", "email": "eskarnezabala@irakasle.eus" },
+            "Miren Gotzone Larrea Gorostiaga": { "centro": "IES ETXEBARRI BHI", "kodea": "015087", "email": "mg.larrea@irakasle.eus" },
+            "Gorane Fernandez Beitia": { "centro": "Bengoetxe BHI", "kodea": "015088", "email": "g.fernandeibeitia@irakasle.eus" },
+            "Andrea Balentziaga Ibarlucea": { "centro": "Juan Orobiogoitia BHI", "kodea": "015090", "email": "a.balentziaga@irakasle.eus" },
+            "Itziar Aparicio Peña": { "centro": "IES MUSKIZ BHI", "kodea": "015092", "email": "i.apariciopena@irakasle.eus" },
+            "Itsasne Ordoñana Bengoa": { "centro": "SAN INAZIO BHI", "kodea": "015191", "email": "i.ordenana@irakasle.eus" },
+            "Maria Carmen Diez Gutierrez": { "centro": "AXULAR BHI", "kodea": "015626", "email": "maria.carmendiez@irakasle.eus" },
+            "Maria Josefa Colmenero Herrera": { "centro": "CPI Antonio Trueba IPI", "kodea": "015683", "email": "colmeneroherrera@irakasle.eus" },
+            "Maria Asuncion Requero Zabala": { "centro": "Ignacio Ellacuria-Zurbaran BHI", "kodea": "015724", "email": "requerozabala@irakasle.eus" },
+            "Monike Gojenola Elizondo": { "centro": "Ermua BHI", "kodea": "015779", "email": "m.gojenola@irakasle.eus" }
+        };
+
+        function cargarListado() {
+            const selectC = document.getElementById("selectCentro");
+            // Obtener centros únicos y ordenar
+            const centros = [...new Set(Object.values(profesoresDB).map(p => p.centro))].sort();
+            
+            centros.forEach(c => {
+                let opt = document.createElement("option");
+                opt.value = c;
+                opt.textContent = c;
+                selectC.appendChild(opt);
+            });
+        }
+
+        function actualizarProfesores() {
+            const selectC = document.getElementById("selectCentro");
+            const selectP = document.getElementById("selectProfesor");
+            const inputK = document.getElementById("kodea");
+            const inputE = document.getElementById("email");
+
+            selectP.innerHTML = '<option value="">Aukeratu irakaslea...</option>';
+            inputK.value = ""; inputE.value = "";
+
+            if (selectC.value) {
+                selectP.disabled = false;
+                const profes = Object.keys(profesoresDB).filter(n => profesoresDB[n].centro === selectC.value);
+                profes.forEach(p => {
+                    let opt = document.createElement("option");
+                    opt.value = p;
+                    opt.textContent = p;
+                    selectP.appendChild(opt);
+                });
+                if (profes.length === 1) {
+                    selectP.value = profes[0];
+                    const d = profesoresDB[profes[0]];
+                    inputK.value = d.kodea;
+                    inputE.value = d.email;
+                }
+            } else {
+                selectP.disabled = true;
+            }
+        }
+
+        function actualizarInputs() {
+            const selectP = document.getElementById("selectProfesor");
+            const inputK = document.getElementById("kodea");
+            const inputE = document.getElementById("email");
+            const d = profesoresDB[selectP.value];
+            if (d) {
+                inputK.value = d.kodea;
+                inputE.value = d.email;
+            }
+        }
+
+        function abrirAdmin() {
+            if (prompt("Pasahitza:") === "1234") {
+                document.getElementById("seccionAdmin").style.display = "block";
+                window.scrollTo(0, document.body.scrollHeight);
+            }
+        }
+
+        window.onload = cargarListado;
+    </script>
+
     <style>
         :root { --primary: #76b895; --primary-dark: #4a7a62; --bg: #f3f4f6; --white: #ffffff; --text: #323130; }
         body { font-family: "Segoe UI", sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 10px; }
@@ -18,8 +119,7 @@
         .bloque-estrategia { grid-column: 1 / -1; background-color: #f0f9f4; padding: 20px; border-radius: 10px; border-left: 6px solid var(--primary); margin-top: 15px; }
         .titulo-estrategia { color: var(--primary-dark); font-size: 1.1rem; font-weight: 800; margin-bottom: 5px; }
         .subtitulo-estrategia { font-size: 0.85rem; color: #666; font-style: italic; margin-bottom: 15px; }
-        .botones { grid-column: 1 / -1; display: flex; gap: 10px; margin-top: 20px; }
-        .btn-primary { background-color: var(--primary); color: white; width: 100%; padding: 15px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .btn-primary { background-color: var(--primary); color: white; width: 100%; padding: 15px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 20px; }
         .admin-only { display: none; margin-top: 30px; border-top: 2px solid #eee; padding-top: 20px; } 
         table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.8rem; }
         th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
@@ -34,12 +134,12 @@
 
     <form id="dataForm">
         <label>Ikastetxea 
-            <select id="selectCentro" required>
+            <select id="selectCentro" onchange="actualizarProfesores()" required>
                 <option value="">Aukeratu ikastetxea...</option>
             </select>
         </label>
         <label>Izen-abizenak 
-            <select id="selectProfesor" required disabled>
+            <select id="selectProfesor" onchange="actualizarInputs()" required disabled>
                 <option value="">Aukeratu irakaslea...</option>
             </select>
         </label>
@@ -81,9 +181,7 @@
             <label style="margin-top:10px;">Adibidea (URL) <input type="text" class="link-input"></label>
         </div>
 
-        <div class="botones">
-            <button type="submit" class="btn-primary" id="btnEnviar"><i class="fa-solid fa-paper-plane"></i> Bidali denak</button>
-        </div>
+        <button type="submit" class="btn-primary" id="btnEnviar">Bidali denak</button>
     </form>
 
     <div id="seccionAdmin" class="admin-only">
@@ -101,84 +199,6 @@
     </div>
 </div>
 
-<script>
-    // DATOS EN BRUTO (Sin codificar para evitar fallos de lectura)
-    const profesoresDB = {
-        "Ane Bedayo Pascual": { "centro": "CPI Aldaialde IPI", "kodea": "010617", "email": "a.bedayo@irakasle.eus" },
-        "Ana Carmona Poza": { "centro": "OLAMENDI BHI", "kodea": "012117", "email": "a.carmona@irakasle.eus" },
-        "Ane Miren Etxegarai Irigoien": { "centro": "KAREMENGO AMA IPI", "kodea": "012150", "email": "etxegaraiirigoien@irakasle.eus" },
-        "Josune Iarra Laskurain": { "centro": "Altza BHI ", "kodea": "012224", "email": "laskurain@irakasle.eus" },
-        "Xabier Garmendia Garcia": { "centro": "JM Iparragirre BHI", "kodea": "012286", "email": "x.garmendia@irakasle.eus" },
-        "Iraia San Miguel Lizarralde": { "centro": "Soraluze BHI", "kodea": "012946", "email": "i.sanmiguellizarralde@irakasle.eus" },
-        "Matilde Navas Los Arcos": { "centro": "Lauaizeta Ikastola BHI", "kodea": "012958", "email": "matti@irakasle.eus" },
-        "Eneritz Garmendia Ollokiegi": { "centro": "LEZO BHI", "kodea": "012962", "email": "eneritzgarmendia@irakasle.eus" },
-        "Izaskun Ormaetxea Jauregi": { "centro": "Orixe BHI", "kodea": "012980", "email": "ormaetxea@irakasle.eus" },
-        "Cynthia Cubero Larrabeiti": { "centro": "Azkoitia BHI", "kodea": "012985", "email": "c.cubero@irakasle.eus" },
-        "Amaya Muniategi-Andicoechea Zubizarreta": { "centro": "Arrasate BHI", "kodea": "013006", "email": "amaiamuni@irakasle.eus" },
-        "Olatz Goikoetxeaundia Usandizaga": { "centro": "IES Oñati BHI", "kodea": "013015", "email": "o.goikoetxeaundia@irakasle.eus" },
-        "Marta Garcia Gutierrez": { "centro": "IES ELGOIBAR BHI", "kodea": "013431", "email": "m.garciagutierrez@irakasle.eus" },
-        "Naiara Lasa Sainz": { "centro": "Beasain BHI", "kodea": "013461", "email": "n.lasa@irakasle.eus" },
-        "Gorka Arruzabala Gomez": { "centro": "Antonio Trueba BHI Barakaldo", "kodea": "014064", "email": "g.gomez@irakasle.eus" },
-        "Oihana Urquiza Merino": { "centro": "Pagasarribide IPI", "kodea": "014140", "email": "o.urcuiza@irakasle.eus" },
-        "Ana Perez Fernandez": { "centro": "IES Martín de Bertendona BHI", "kodea": "014187", "email": "a.perez.f@irakasle.eus" },
-        "Eritz Vizcaya Ozaeta": { "centro": "J.B. EGUZKITZA MEABE IPI", "kodea": "014341", "email": "e.vizcaya@irakasle.eus" },
-        "Jaime Perez Martin": { "centro": "IES JA Zunzunegui BHI", "kodea": "014398", "email": "j.perezmartin@irakasle.eus" },
-        "Virginia Tome Cabero": { "centro": "Balmaseda BHI", "kodea": "014451", "email": "julio@balmasedabhi.eus" },
-        "Miren Ivon Amorrortu Amarica": { "centro": "IES Arratia BHI", "kodea": "014456", "email": "ibone@irakasle.eus" },
-        "IES LUIS BRIÑAS-SANTUTXU BHI ZUZENDARITZA": { "centro": "Luis Briñas-Santutxu BHI", "kodea": "015075", "email": "015075aa@hezkuntza.net" },
-        "Eskarne Zabala Lodos": { "centro": "Zorrotza bhi", "kodea": "015078", "email": "eskarnezabala@irakasle.eus" },
-        "Miren Gotzone Larrea Gorostiaga": { "centro": "IES ETXEBARRI BHI", "kodea": "015087", "email": "mg.larrea@irakasle.eus" },
-        "Gorane Fernandez Beitia": { "centro": "Bengoetxe BHI", "kodea": "015088", "email": "g.fernandeibeitia@irakasle.eus" },
-        "Andrea Balentziaga Ibarlucea": { "centro": "Juan Orobiogoitia BHI", "kodea": "015090", "email": "a.balentziaga@irakasle.eus" },
-        "Itziar Aparicio Peña": { "centro": "IES MUSKIZ BHI", "kodea": "015092", "email": "i.apariciopena@irakasle.eus" },
-        "Itsasne Ordoñana Bengoa": { "centro": "SAN INAZIO BHI", "kodea": "015191", "email": "i.ordenana@irakasle.eus" },
-        "Maria Carmen Diez Gutierrez": { "centro": "AXULAR BHI", "kodea": "015626", "email": "maria.carmendiez@irakasle.eus" },
-        "Maria Josefa Colmenero Herrera": { "centro": "CPI Antonio Trueba IPI", "kodea": "015683", "email": "colmeneroherrera@irakasle.eus" },
-        "Maria Asuncion Requero Zabala": { "centro": "Ignacio Ellacuria-Zurbaran BHI", "kodea": "015724", "email": "requerozabala@irakasle.eus" },
-        "Monike Gojenola Elizondo": { "centro": "Ermua BHI", "kodea": "015779", "email": "m.gojenola@irakasle.eus" }
-    };
-
-    // POBLAR CENTROS
-    const selectC = document.getElementById("selectCentro");
-    const selectP = document.getElementById("selectProfesor");
-    const inputK = document.getElementById("kodea");
-    const inputE = document.getElementById("email");
-
-    const centrosList = [...new Set(Object.values(profesoresDB).map(p => p.centro))].sort();
-    centrosList.forEach(c => {
-        let opt = document.createElement("option"); opt.value = c; opt.textContent = c;
-        selectC.appendChild(opt);
-    });
-
-    // EVENTOS DE CAMBIO
-    selectC.onchange = function() {
-        selectP.innerHTML = '<option value="">Aukeratu irakaslea...</option>';
-        inputK.value = ""; inputE.value = "";
-        if (this.value) {
-            selectP.disabled = false;
-            const profes = Object.keys(profesoresDB).filter(nombre => profesoresDB[nombre].centro === this.value);
-            profes.forEach(p => {
-                let opt = document.createElement("option"); opt.value = p; opt.textContent = p;
-                selectP.appendChild(opt);
-            });
-            if(profes.length === 1) { selectP.value = profes[0]; selectP.onchange(); }
-        } else { selectP.disabled = true; }
-    };
-
-    selectP.onchange = function() {
-        const datos = profesoresDB[this.value];
-        if (datos) { inputK.value = datos.kodea; inputE.value = datos.email; }
-    };
-
-    // FUNCION ADMIN
-    function abrirAdmin() {
-        if (prompt("Pasahitza:") === "1234") {
-            document.getElementById("seccionAdmin").style.display = "block";
-            window.scrollTo(0, document.body.scrollHeight);
-        }
-    }
-</script>
-
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -187,7 +207,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // ENVIAR DATOS
     document.getElementById("dataForm").onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById("btnEnviar"); btn.disabled = true;
@@ -213,7 +232,6 @@
         } catch (err) { alert("Errorea: " + err.message); btn.disabled = false; }
     };
 
-    // TABLA ADMIN
     let datosMemoria = [];
     onSnapshot(query(collection(db, "ekarpenak"), orderBy("fecha", "desc")), (snap) => {
         const t = document.getElementById("tablaDatos"); t.innerHTML = ""; datosMemoria = [];
