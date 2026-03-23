@@ -90,7 +90,7 @@
         <button type="button" id="exportarCSV" style="padding:10px; background:#4a7a62; color:white; border:none; border-radius:4px; cursor:pointer;">CSV deskargatu</button>
         <div style="overflow-x:auto;">
             <table>
-                <thead><tr><th>Zentroa / Irakaslea</th><th>Estrategia</th><th>Deskribapena</th></tr></thead>
+                <thead><tr><th>Zentroa</th><th>Irakaslea</th><th>Estrategia</th><th>Deskribapena</th></tr></thead>
                 <tbody id="tablaDatos"></tbody>
             </table>
         </div>
@@ -102,51 +102,73 @@
 </div>
 
 <script>
-    // DATOS DE PROFESORES
-    const rawData = "eyJBbmUgQmVkYXlvIFBhc2N1YWwiOnsiY2VudHJvIjoiQ1BJIEFsZGFpYWxkZSBJUEkiLCJrb2RlYSI6IjAxMDYxNyIsImVtYWlsIjoiYS5iZWRheW9AaXJha2FzbGUuZXVzIn0sIkFuYSBDYXJtb25hIFBvemEiOnsiY2VudHJvIjoiT0xBTUVOREkgQkhJIiwia29kZWEiOiIwMTIxMTciLCJlbWFpbCI6ImEuY2FybW9uYUBpcmFrYXNsZS5ldXMifSwiQW5lIE1pcmVuIEV0eGVnYXJhaSBJcmlnb2llbiI6eyJjZW50cm8iOiJLQVJFTUVOR08gQU1BIElQSSIsImtvZGVhIjoiMDEyMTUwIiwiZW1haWwiOiJldHhlZ2FyYWlpcmlnb2llbkBpcmFrYXNsZS5ldXMifSwiSm9zdW5lIElYXJyYSBMYXNrdXJhaW4iOnsiY2VudHJvIjoiQWx0emEgQkhJICIsImtvZGVhIjoiMDEyMjI0IiwiZW1haWwiOiJsYXNrdXJhaW5AaXJha2FzbGUuZXVzIn0sIlhhYmllciBHYXJtZW5kaWEgR2FyY2lhIjp7ImNlbnRybyI6IkpNIElwYXJyYWdpcnJlIEJISSIsImtvZGVhIjoiMDEyMjg2IiwiZW1haWwiOiJ4Lmdhcm1lbmRpYUBpcmFrYXNsZS5ldXMifSwiSXJhaWEgU2FuIE1pZ3VlbCBMaXphcnJhbGRlIjp7ImNlbnRybyI6IlNvcmFsdXplIEJISSIsImtvZGVhIjoiMDEyOTQ2IiwiZW1haWwiOiJpLnNhbm1pZ3VlbGxpemFycmFsZGVAaXJha2FzbGUuZXVzIn0sIk1hdGlsZGUgTmF2YXMgTG9zIEFyY29zIjp7ImNlbnRybyI6IkxhdWFpemV0YSBJa2FzdG9sYSBCSEkiLCJrb2RlYSI6IjAxMjk1OCIsImVtYWlsIjoibWF0dGlAaXJha2FzbGUuZXVzIn0sIkVuZXJpdHogR2FybWVuZGlhIE9sbG9raWVnaSI6eyJjZW50cm8iOiJMRVpPIEJISSIsImtvZGVhIjoiMDEyOTYyIiwiZW1haWwiOiJlbmVyaXR6Z2FybWVuZGlhQGlyYWthc2xlLmV1cyJ9LCJJemFza3VuIE9ybWFldHhlYSBKYXVyZWdpIjp7ImNlbnRybyI6Ik9yaXhlIEJISSIsImtvZGVhIjoiMDEyOTgwIiwiZW1haWwiOiJvcm1hZXR4ZWFAaXJha2FzbGUuZXVzIn0sIkN5bnRoaWEgQ3ViZXJvIExhcnJhYmVpdGkiOnsiY2VudHJvIjoiQXprb2l0aWEgQkhJIiwia29kZWEiOiIwMTI5ODUiLCJlbWFpbCI6ImMuY3ViZXJvQGlyYWthc2xlLmV1cyJ9LCJBbWF5YSBNdW5pYXRlZ2ktQW5kaWNvZWNoZWEgWnViaXphcnJldGEiOnsiY2VudHJvIjoiQXJyYXNhdGUgQkhJIiwia29kZWEiOiIwMTMwMDYiLCJlbWFpbCI6ImFtYWlhbXVuaUBpcmFrYXNsZS5ldXMifSwiT2xhdHogR29pa29ldHhlYXVuZGlhIFVzYW5kaXphZ2EiOnsiY2VudHJvIjoiSUVTIE/YXRpIEJISSIsImtvZGVhIjoiMDEzMDE1IiwiZW1haWwiOiJvLmdvaWtvZXR4ZWF1bmRpYUBpcmFrYXNsZS5ldXMifSwiTWFydGEgR2FyY2lhIEd1dGllcnJleiI6eyJjZW50cm8iOiJJRVMgRUxHT0lCQVIgQkhJIiwia29kZWEiOiIwMTM0MzEiLCJlbWFpbCI6Im0uZ2FyY2lhZ3V0aWVycmV6QGlyYWthc2xlLmV1cyJ9LCJOYWlhcmEgTGFzYSBTYWlueiI6eyJjZW50cm8iOiJCZWFzYWluIEJISSIsImtvZGVhIjoiMDEzNDYxIiwiZW1haWwiOiJuLmxhc2FAaXJha2FzbGUuZXVzIn0sIkdvcmthIEFycnV6YXphYmFsYSBHb21leiI6eyJjZW50cm8iOiJBbnRvbmlvIFRydWViYSBCSEkgQmFyYWthbGRvIiwia29kZWEiOiIwMTQwNjQiLCJlbWFpbCI6ImcuZ29tZXpAaXJha2FzbGUuZXVzIn0sIk9paGFuYSBVcnF1aXphIE1lcmlubyI6eyJjZW50cm8iOiJQYWdhc2FycmliaWRlIElQSSIsImtvZGVhIjoiMDE0MTQwIiwiZW1haWwiOiJvLnVyY3VpemFAaXJha2FzbGUuZXVzIn0sIkFuYSBQZXJleiBGZXJuYW5kZXoiOnsiY2VudHJvIjoiSUVTIE1hcnTDrW4gZGUgQmVydGVuZG9uYSBCSEkiLCJrb2RlYSI6IjAxNDE4NyIsImVtYWlsIjoiYS5wZXJlei5mQGlyYWthc2xlLmV1cyJ9LCJFcml0eiBWaXpjYXlhIE96YWV0YSI6eyJjZW50cm8iOiJKLkIuIEVHVVpLSVRaQSBNRUFCRSBJUEkiLCJrb2RlYSI6IjAxNDM0MSIsImVtYWlsIjoiZS52aXpjYXlhQGlyYWthc2xlLmV1cyJ9LCJKYWltZSBQZXJleiBNYXJ0aW4iOnsiY2VudHJvIjoiSUVTIEpBIFp1bnp1bmVndWkgQkhJIiwia29kZWEiOiIwMTQzOTgiLCJlbWFpbCI6ImoucGVyZXptYXJ0aW5AaXJha2FzbGUuZXVzIn0sIlZpcmdpbmlhIFRvbWUgQ2FiZXJvIjp7ImNlbnRybyI6IkJhbG1hc2VkYSBCSEkiLCJrb2RlYSI6IjAxNDQ1MSIsImVtYWlsIjoianVsaW9AYmFsbWFzZWRhYmhpLmV1cyJ9LCJNaXJlbiBJdm9uIEFtb3Jyb3J0dSBBbWFyaWNhIjp7ImNlbnRybyI6IklFUyBBcnJhdGlhIEJISSIsImtvZGVhIjoiMDE0NDU2IiwiZW1haWwiOiJpYm9uZUBpcmFrYXNsZS5ldXMifSwiSUVTIExVSVMgQlJJw5FBUy1TQU5UVVRYVSBCSEkgWlVaRU5EQVJJVFpBIDAxNTA3NSI6eyJjZW50cm8iOiJMdWlzIEJyaVx1MDBGMWFzLVNhbnR1dHh1IEJISSIsImtvZGVhIjoiMDE1MDc1IiwiZW1haWwiOiIwMTUwNzVhYUBoZXprdW50emEubmV0In0sIkVza2FybmUgWmFiYWxhIExvZG9zIjp7ImNlbnRybyI6IlpvcnJvdHphIGJoaSIsImtvZGVhIjoiMDE1MDc4IiwiZW1haWwiOiJlc2thcm5lemFiYWxhQGlyYWthc2xlLmV1cyJ9LCJNaXJlbiBHb3R6b25lIExhcnJlYSBHb3Jvc3RpYWdhIjp7ImNlbnRybyI6IklFUyBFVFhFQkFSUkkgQkhJIiwia29kZWEiOiIwMTUwODciLCJlbWFpbCI6Im1nLmxhcnJlYUBpcmFrYXNsZS5ldXMifSwiR29yYW5lIEZlcm5hbmRleiBCZWl0aWEiOnsiY2VudHJvIjoiQmVuZ29ldHhlIEJISSIsImtvZGVhIjoiMDE1MDg4IiwiZW1haWwiOiJnLmZlcm5hbmRlaWJlaXRpYUBpcmFrYXNsZS5ldXMifSwiQW5kcmVhIEJhbGVudHppYWdhIEliYXJsdWNlYSI6eyJjZW50cm8iOiJKdWFuIE9yb2Jpb2dvaXRpYSBCSEkiLCJrb2RlYSI6IjAxNTA5MCIsImVtYWlsIjoiYS5iYWxlbnR6aWFnYUBpcmFrYXNsZS5ldXMifSwiSXR6aWFyIEFwYXJpY2lvIFBlw7FhIjp7ImNlbnRybyI6IklFUyBNVVNL durantIEJISSIsImtvZGVhIjoiMDE1MDkyIiwiZW1haWwiOiJpLmFwYXJpY2lvcGVuYUBpcmFrYXNsZS5ldXMifSwiSXRzYXNuZSBPcmRlw7FhbmEgQmVuZ29hIjp7ImNlbnRybyI6IlNBTiBJTkFaSU8gQkhJIiwia29kZWEiOiIwMTUxOTEiLCJlbWFpbCI6Imkub3JkZW5hbmFAaXJha2FzbGUuZXVzIn0sIk1hcmlhIENhcm1lbiBEaWV6IEd1dGllcnJleiI6eyJjZW50cm8iOiJBWFVMQVIgQkhJIiwia29kZWEiOiIwMTU2MjYiLCJlbWFpbCI6Im1hcmlhLmNhcm1lbmRpZXpAaXJha2FzbGUuZXVzIn0sIk1hcmlhIEpvc2VmYSBDb2xtZW5lcm8gSGVycmVyYSI6eyJjZW50cm8iOiJDUEkgQW50b25pbyBUcnVlYmEgSVBJIiwia29kZWEiOiIwMTU2ODMiLCJlbWFpbCI6ImNvbG1lbmVyb2hlcnJlcmFAaXJha2FzbGUuZXVzIn0sIk1hcmlhIEFzdW5jaW9uIFJlcXVlcm8gWmFiYWxhIjp7ImNlbnRybyI6IklnbmFjaW8gRWxsYWN1cmlhLVp1cmJhcmFuIEJISSIsImtvZGVhIjoiMDE1NzI0IiwiZW1haWwiOiJyZXF1ZXJvemFiYWxhQGlyYWthc2xlLmV1cyJ9LCJNb25pa2UgR29qZW5vbGEgRWxpem9uZG8iOnsiY2VudHJvIjoiRXJtdWEgQkhJIiwia29kZWEiOiIwMTU3NzkiLCJlbWFpbCI6Im0uZ29qZW5vbGFAaXJha2FzbGUuZXVzIn19";
-    const profesoresDB = JSON.parse(atob(rawData));
-
-    // CARGA INMEDIATA DE CENTROS
-    window.onload = function() {
-        const sC = document.getElementById("selectCentro");
-        const centrosUnicos = [...new Set(Object.values(profesoresDB).map(p => p.centro))].sort();
-        
-        centrosUnicos.forEach(centro => {
-            let opt = document.createElement("option");
-            opt.value = centro;
-            opt.textContent = centro;
-            sC.appendChild(opt);
-        });
+    // DATOS EN BRUTO (Sin codificar para evitar fallos de lectura)
+    const profesoresDB = {
+        "Ane Bedayo Pascual": { "centro": "CPI Aldaialde IPI", "kodea": "010617", "email": "a.bedayo@irakasle.eus" },
+        "Ana Carmona Poza": { "centro": "OLAMENDI BHI", "kodea": "012117", "email": "a.carmona@irakasle.eus" },
+        "Ane Miren Etxegarai Irigoien": { "centro": "KAREMENGO AMA IPI", "kodea": "012150", "email": "etxegaraiirigoien@irakasle.eus" },
+        "Josune Iarra Laskurain": { "centro": "Altza BHI ", "kodea": "012224", "email": "laskurain@irakasle.eus" },
+        "Xabier Garmendia Garcia": { "centro": "JM Iparragirre BHI", "kodea": "012286", "email": "x.garmendia@irakasle.eus" },
+        "Iraia San Miguel Lizarralde": { "centro": "Soraluze BHI", "kodea": "012946", "email": "i.sanmiguellizarralde@irakasle.eus" },
+        "Matilde Navas Los Arcos": { "centro": "Lauaizeta Ikastola BHI", "kodea": "012958", "email": "matti@irakasle.eus" },
+        "Eneritz Garmendia Ollokiegi": { "centro": "LEZO BHI", "kodea": "012962", "email": "eneritzgarmendia@irakasle.eus" },
+        "Izaskun Ormaetxea Jauregi": { "centro": "Orixe BHI", "kodea": "012980", "email": "ormaetxea@irakasle.eus" },
+        "Cynthia Cubero Larrabeiti": { "centro": "Azkoitia BHI", "kodea": "012985", "email": "c.cubero@irakasle.eus" },
+        "Amaya Muniategi-Andicoechea Zubizarreta": { "centro": "Arrasate BHI", "kodea": "013006", "email": "amaiamuni@irakasle.eus" },
+        "Olatz Goikoetxeaundia Usandizaga": { "centro": "IES Oñati BHI", "kodea": "013015", "email": "o.goikoetxeaundia@irakasle.eus" },
+        "Marta Garcia Gutierrez": { "centro": "IES ELGOIBAR BHI", "kodea": "013431", "email": "m.garciagutierrez@irakasle.eus" },
+        "Naiara Lasa Sainz": { "centro": "Beasain BHI", "kodea": "013461", "email": "n.lasa@irakasle.eus" },
+        "Gorka Arruzabala Gomez": { "centro": "Antonio Trueba BHI Barakaldo", "kodea": "014064", "email": "g.gomez@irakasle.eus" },
+        "Oihana Urquiza Merino": { "centro": "Pagasarribide IPI", "kodea": "014140", "email": "o.urcuiza@irakasle.eus" },
+        "Ana Perez Fernandez": { "centro": "IES Martín de Bertendona BHI", "kodea": "014187", "email": "a.perez.f@irakasle.eus" },
+        "Eritz Vizcaya Ozaeta": { "centro": "J.B. EGUZKITZA MEABE IPI", "kodea": "014341", "email": "e.vizcaya@irakasle.eus" },
+        "Jaime Perez Martin": { "centro": "IES JA Zunzunegui BHI", "kodea": "014398", "email": "j.perezmartin@irakasle.eus" },
+        "Virginia Tome Cabero": { "centro": "Balmaseda BHI", "kodea": "014451", "email": "julio@balmasedabhi.eus" },
+        "Miren Ivon Amorrortu Amarica": { "centro": "IES Arratia BHI", "kodea": "014456", "email": "ibone@irakasle.eus" },
+        "IES LUIS BRIÑAS-SANTUTXU BHI ZUZENDARITZA": { "centro": "Luis Briñas-Santutxu BHI", "kodea": "015075", "email": "015075aa@hezkuntza.net" },
+        "Eskarne Zabala Lodos": { "centro": "Zorrotza bhi", "kodea": "015078", "email": "eskarnezabala@irakasle.eus" },
+        "Miren Gotzone Larrea Gorostiaga": { "centro": "IES ETXEBARRI BHI", "kodea": "015087", "email": "mg.larrea@irakasle.eus" },
+        "Gorane Fernandez Beitia": { "centro": "Bengoetxe BHI", "kodea": "015088", "email": "g.fernandeibeitia@irakasle.eus" },
+        "Andrea Balentziaga Ibarlucea": { "centro": "Juan Orobiogoitia BHI", "kodea": "015090", "email": "a.balentziaga@irakasle.eus" },
+        "Itziar Aparicio Peña": { "centro": "IES MUSKIZ BHI", "kodea": "015092", "email": "i.apariciopena@irakasle.eus" },
+        "Itsasne Ordoñana Bengoa": { "centro": "SAN INAZIO BHI", "kodea": "015191", "email": "i.ordenana@irakasle.eus" },
+        "Maria Carmen Diez Gutierrez": { "centro": "AXULAR BHI", "kodea": "015626", "email": "maria.carmendiez@irakasle.eus" },
+        "Maria Josefa Colmenero Herrera": { "centro": "CPI Antonio Trueba IPI", "kodea": "015683", "email": "colmeneroherrera@irakasle.eus" },
+        "Maria Asuncion Requero Zabala": { "centro": "Ignacio Ellacuria-Zurbaran BHI", "kodea": "015724", "email": "requerozabala@irakasle.eus" },
+        "Monike Gojenola Elizondo": { "centro": "Ermua BHI", "kodea": "015779", "email": "m.gojenola@irakasle.eus" }
     };
 
-    // LOGICA DE DESPLEGABLES
-    const sC = document.getElementById("selectCentro");
-    const sP = document.getElementById("selectProfesor");
-    const iK = document.getElementById("kodea");
-    const iE = document.getElementById("email");
+    // POBLAR CENTROS
+    const selectC = document.getElementById("selectCentro");
+    const selectP = document.getElementById("selectProfesor");
+    const inputK = document.getElementById("kodea");
+    const inputE = document.getElementById("email");
 
-    sC.addEventListener("change", () => {
-        sP.innerHTML = '<option value="">Aukeratu irakaslea...</option>';
-        iK.value = ""; iE.value = "";
-        if (sC.value) {
-            sP.disabled = false;
-            const profes = Object.keys(profesoresDB).filter(name => profesoresDB[name].centro === sC.value);
-            profes.forEach(name => {
-                let opt = document.createElement("option"); opt.value = name; opt.textContent = name;
-                sP.appendChild(opt);
+    const centrosList = [...new Set(Object.values(profesoresDB).map(p => p.centro))].sort();
+    centrosList.forEach(c => {
+        let opt = document.createElement("option"); opt.value = c; opt.textContent = c;
+        selectC.appendChild(opt);
+    });
+
+    // EVENTOS DE CAMBIO
+    selectC.onchange = function() {
+        selectP.innerHTML = '<option value="">Aukeratu irakaslea...</option>';
+        inputK.value = ""; inputE.value = "";
+        if (this.value) {
+            selectP.disabled = false;
+            const profes = Object.keys(profesoresDB).filter(nombre => profesoresDB[nombre].centro === this.value);
+            profes.forEach(p => {
+                let opt = document.createElement("option"); opt.value = p; opt.textContent = p;
+                selectP.appendChild(opt);
             });
-            if(profes.length === 1) { 
-                sP.value = profes[0]; 
-                const p = profesoresDB[profes[0]];
-                iK.value = p.kodea; iE.value = p.email;
-            }
-        } else { sP.disabled = true; }
-    });
+            if(profes.length === 1) { selectP.value = profes[0]; selectP.onchange(); }
+        } else { selectP.disabled = true; }
+    };
 
-    sP.addEventListener("change", () => {
-        const p = profesoresDB[sP.value];
-        if (p) { iK.value = p.kodea; iE.value = p.email; }
-    });
+    selectP.onchange = function() {
+        const datos = profesoresDB[this.value];
+        if (datos) { inputK.value = datos.kodea; inputE.value = datos.email; }
+    };
 
     // FUNCION ADMIN
     function abrirAdmin() {
@@ -168,7 +190,7 @@
     // ENVIAR DATOS
     document.getElementById("dataForm").onsubmit = async (e) => {
         e.preventDefault();
-        const btn = document.getElementById("btnEnviar"); btn.disabled = true; btn.textContent = "Bidaltzen...";
+        const btn = document.getElementById("btnEnviar"); btn.disabled = true;
         const descs = document.querySelectorAll(".desc-input");
         const links = document.querySelectorAll(".link-input");
         
@@ -176,10 +198,10 @@
             for (let i = 0; i < descs.length; i++) {
                 if (descs[i].value.trim()) {
                     await addDoc(collection(db, "ekarpenak"), {
-                        ikastetxea: sC.value,
-                        izenAbizenak: sP.value,
-                        kodea: iK.value,
-                        email: iE.value,
+                        ikastetxea: document.getElementById("selectCentro").value,
+                        izenAbizenak: document.getElementById("selectProfesor").value,
+                        kodea: document.getElementById("kodea").value,
+                        email: document.getElementById("email").value,
                         aukera: descs[i].dataset.cat,
                         deskribapena: descs[i].value.trim(),
                         adibidea: links[i].value.trim(),
@@ -198,7 +220,7 @@
         snap.forEach(doc => {
             const d = doc.data(); datosMemoria.push(d);
             const r = document.createElement("tr");
-            r.innerHTML = `<td><strong>${d.ikastetxea}</strong><br>${d.izenAbizenak}</td><td>${d.aukera}</td><td>${d.deskribapena}</td>`;
+            r.innerHTML = `<td>${d.ikastetxea}</td><td>${d.izenAbizenak}</td><td>${d.aukera}</td><td>${d.deskribapena}</td>`;
             t.appendChild(r);
         });
     });
